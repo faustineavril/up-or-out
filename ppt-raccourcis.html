@@ -1,0 +1,1167 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Raccourcis Hero · PowerPoint</title>
+<!-- Fichier généré par tools/build-standalone.js : modifier les sources, puis relancer le script. -->
+<style>
+html, body { margin: 0; height: 100%; background: #201f1e; overflow: hidden; overscroll-behavior: none; }
+#app { position: fixed; inset: 0; }
+/* ===== Raccourcis Hero (PowerPoint × jeu de rythme) — toutes les classes sont préfixées pptg- ===== */
+.pptg {
+  position: relative; width: 100%; height: 100%; overflow: hidden; overflow: clip; background: #201f1e;
+  user-select: none; -webkit-user-select: none; -webkit-touch-callout: none;
+}
+.pptg-board {
+  position: absolute; left: 0; top: 0; width: 1280px; height: 720px; transform-origin: 0 0; overflow: hidden;
+  font-family: 'Segoe UI', 'Segoe UI Variable', system-ui, -apple-system, Roboto, Arial, sans-serif; color: #252423; background: #e6e6e6;
+}
+.pptg, .pptg *, .pptg *::before, .pptg *::after { box-sizing: border-box; }
+.pptg-board button { font-family: inherit; cursor: pointer; }
+
+/* barre de titre + ruban */
+.pptg-titlebar { height: 32px; background: #b7472a; color: #fff; display: flex; align-items: center; gap: 12px; padding: 0 0 0 10px; font-size: 13px; }
+.pptg-logo { width: 22px; height: 22px; border-radius: 4px; background: #fff; color: #b7472a; font-weight: 800; display: flex; align-items: center; justify-content: center; }
+.pptg-win { margin-left: auto; display: flex; }
+.pptg-win i { width: 46px; text-align: center; font-style: normal; }
+.pptg-tabs { height: 30px; background: #b7472a; display: flex; align-items: flex-end; gap: 2px; padding-left: 8px; }
+.pptg-tabs span { color: #fff; font-size: 13px; padding: 5px 13px; border-radius: 4px 4px 0 0; }
+.pptg-tabs span.on { background: #f3f2f1; color: #b7472a; font-weight: 600; }
+.pptg-ribbon { height: 88px; background: #f3f2f1; border-bottom: 1px solid #d2d0ce; display: flex; align-items: stretch; padding: 6px 10px; gap: 4px; }
+.pptg-group { display: flex; flex-direction: column; justify-content: space-between; padding: 0 12px; border-right: 1px solid #d2d0ce; }
+.pptg-group small { font-size: 11px; color: #605e5c; text-align: center; }
+.pptg-gicons { display: flex; gap: 8px; align-items: center; font-size: 12px; color: #323130; }
+.pptg-gicons b { font-size: 30px; }
+.pptg-gicons span { line-height: 1.15; }
+.pptg-gicons.font span { width: 24px; height: 24px; border: 1px solid #c8c6c4; border-radius: 3px; display: flex; align-items: center; justify-content: center; background: #fff; }
+
+/* HUD dans le ruban */
+.pptg-hud { margin-left: auto; display: flex; gap: 10px; align-items: center; padding-right: 4px; }
+.pptg-hud-box { position: relative; min-width: 122px; height: 70px; border-radius: 10px; background: #fff; border: 2px solid #e1dfdd; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+.pptg-hud-box small { position: relative; z-index: 2; font-size: 11px; text-transform: uppercase; letter-spacing: 1.5px; color: #8a8886; font-weight: 700; }
+.pptg-hud-box b { position: relative; z-index: 2; font-size: 30px; line-height: 1; color: #b7472a; font-variant-numeric: tabular-nums; }
+.pptg-hud-box b.bump { animation: pptgBump .4s; }
+@keyframes pptgBump { 40% { transform: scale(1.35); color: #ff6a1a; } }
+.pptg-hud-box.combo { overflow: visible; }
+.pptg-flame { position: absolute; left: 0; right: 0; bottom: 0; height: 0; z-index: 1; pointer-events: none; transition: height .3s; }
+.pptg-flame i { position: absolute; bottom: 0; width: 46px; height: 100%; border-radius: 50% 50% 35% 35%; background: radial-gradient(ellipse at 50% 90%, #fff3b0, #ffb703 30%, #ff6a1a 60%, rgba(255, 60, 0, 0) 75%); filter: blur(1px); animation: pptgFlick .35s ease-in-out infinite alternate; transform-origin: 50% 100%; }
+.pptg-flame i:nth-child(1) { left: 8px; animation-delay: -.1s; }
+.pptg-flame i:nth-child(2) { left: 38px; height: 125%; animation-delay: -.2s; }
+.pptg-flame i:nth-child(3) { right: 8px; }
+@keyframes pptgFlick { from { transform: scaleY(.85) skewX(-4deg); } to { transform: scaleY(1.12) skewX(5deg); } }
+.pptg-hud-box.combo.warm { border-color: #ffb703; }
+.pptg-hud-box.combo.warm .pptg-flame { height: 40px; }
+.pptg-hud-box.combo.hot { border-color: #ff6a1a; background: #fff4ec; }
+.pptg-hud-box.combo.hot .pptg-flame { height: 70px; bottom: 4px; }
+.pptg-hud-box.combo.max { border-color: #e81123; background: #ffe9e0; animation: pptgHeat .5s infinite alternate; }
+.pptg-hud-box.combo.max .pptg-flame { height: 100px; bottom: 6px; }
+.pptg-hud-box.combo.hot b, .pptg-hud-box.combo.max b { color: #c50f1f; text-shadow: 0 0 10px #fff; }
+@keyframes pptgHeat { to { box-shadow: 0 0 22px rgba(255, 90, 0, .8); } }
+
+/* zone principale */
+.pptg-main { position: absolute; left: 0; right: 0; top: 150px; bottom: 28px; display: flex; }
+.pptg-thumbs { width: 170px; background: #f3f2f1; border-right: 1px solid #d2d0ce; padding: 8px 10px; display: flex; flex-direction: column; gap: 6px; }
+.pptg-thumb { display: flex; align-items: center; gap: 6px; height: 46px; }
+.pptg-thumb > span { width: 18px; font-size: 12px; color: #605e5c; text-align: right; }
+.pptg-mini { flex: 1; height: 44px; background: #fff; border: 1px solid #c8c6c4; border-left: 5px solid #c8c6c4; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 18px; transition: background .3s; }
+.pptg-thumb.lv-facile .pptg-mini { border-left-color: #107c10; }
+.pptg-thumb.lv-intermediaire .pptg-mini { border-left-color: #ca5010; }
+.pptg-thumb.lv-difficile .pptg-mini { border-left-color: #a4262c; }
+.pptg-thumb.current .pptg-mini { outline: 3px solid #c43e1c; outline-offset: 1px; color: #c43e1c; }
+.pptg-thumb.phase1 .pptg-mini { background: #dff6dd; color: #107c10; }
+.pptg-thumb.phase2 .pptg-mini { background: #fff4ce; color: #8a6100; }
+.pptg-thumb.missed .pptg-mini { background: #fde7e9; color: #a4262c; }
+
+.pptg-stagearea { position: relative; flex: 1; background: #e6e6e6; }
+.pptg-slide {
+  position: absolute; left: 105px; top: 18px; width: 900px; height: 506px; background: #fff; border-radius: 2px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, .2), 0 0 0 1px #d2d0ce; padding: 20px 34px 16px; overflow: hidden;
+}
+.pptg-slide.play { display: flex; flex-direction: column; gap: 8px; }
+.pptg-slide.shake { animation: pptgShake .4s; }
+@keyframes pptgShake { 20%, 60% { transform: translateX(-12px); } 40%, 80% { transform: translateX(12px); } }
+.pptg-slide::after { content: ''; position: absolute; inset: 0; pointer-events: none; opacity: 0; }
+.pptg-slide.flash-ok::after { background: radial-gradient(circle, rgba(16, 124, 16, .0) 40%, rgba(16, 124, 16, .35)); animation: pptgFlash .6s; }
+.pptg-slide.flash-ko::after { background: rgba(232, 17, 35, .22); animation: pptgFlash .45s; }
+@keyframes pptgFlash { 0% { opacity: 1; } 100% { opacity: 0; } }
+
+.pptg-qhead { display: flex; justify-content: space-between; align-items: center; }
+.pptg-level { font-size: 13px; font-weight: 700; color: #fff; padding: 3px 12px; border-radius: 20px; letter-spacing: .5px; background: #107c10; }
+.lv-intermediaire .pptg-level { background: #ca5010; }
+.lv-difficile .pptg-level { background: #a4262c; }
+.pptg-qn { font-size: 14px; color: #8a8886; font-weight: 600; }
+.pptg-action { font-size: 40px; font-weight: 800; line-height: 1.12; color: #252423; min-height: 50px; }
+.lv-difficile .pptg-action { font-size: 33px; }
+.pptg-slide.intro .pptg-action { animation: pptgPush .5s cubic-bezier(.2, .8, .2, 1); }
+@keyframes pptgPush { from { transform: translateX(120px); opacity: 0; } }
+.pptg-phase { font-size: 17px; color: #605e5c; }
+.pptg-phase b { color: #c43e1c; }
+.revealed .pptg-phase b { color: #e81123; }
+
+.pptg-timer { position: relative; height: 24px; border-radius: 12px; background: #edebe9; overflow: hidden; flex: none; }
+.pptg-timer i { display: block; height: 100%; width: 100%; border-radius: 12px; }
+.pptg-timer b { position: absolute; right: 12px; top: 0; line-height: 24px; font-size: 14px; color: #252423; font-variant-numeric: tabular-nums; }
+.pptg-timer.urgent { animation: pptgUrgent .4s infinite alternate; }
+@keyframes pptgUrgent { to { box-shadow: 0 0 0 3px rgba(232, 17, 35, .35); } }
+
+/* la « piste » façon jeu de rythme */
+.pptg-track { position: relative; flex: 1; min-height: 190px; border-radius: 10px; overflow: hidden; background: linear-gradient(#141313, #2d2c2b); box-shadow: inset 0 0 30px rgba(0, 0, 0, .6); }
+.pptg-lanes {
+  position: absolute; inset: 0;
+  background:
+    repeating-linear-gradient(90deg, transparent 0 148px, rgba(255, 255, 255, .07) 148px 150px),
+    repeating-linear-gradient(180deg, transparent 0 30px, rgba(255, 140, 66, .10) 30px 32px);
+  animation: pptgScroll 1.4s linear infinite;
+}
+.pptg-track.fast .pptg-lanes { animation-duration: .35s; }
+@keyframes pptgScroll { from { background-position: 0 0, 0 0; } to { background-position: 0 0, 0 32px; } }
+.pptg-line { position: absolute; left: 0; right: 0; bottom: 59px; height: 6px; background: #ff8c42; box-shadow: 0 0 14px 3px rgba(255, 120, 40, .8); }
+.pptg-line.hit { animation: pptgHit .4s; }
+@keyframes pptgHit { 40% { background: #6bff6b; box-shadow: 0 0 30px 10px rgba(80, 255, 80, .9); } }
+.pptg-notes { position: absolute; inset: 0; }
+.pptg-note { position: absolute; left: 50%; transform: translateX(-50%); display: flex; align-items: center; gap: 6px; transition: bottom .35s cubic-bezier(.3, .7, .3, 1); white-space: nowrap; }
+.pptg-note em { font-style: normal; color: #ffb27d; font-weight: 800; font-size: 15px; margin-right: 4px; width: 22px; height: 22px; border: 2px solid #ffb27d; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+.pptg-plus { font-style: normal; color: #ffb27d; font-weight: 800; font-size: 20px; }
+.pptg-cap {
+  min-width: 62px; height: 56px; padding: 0 14px; border-radius: 10px; display: inline-flex; align-items: center; justify-content: center;
+  font-weight: 800; font-size: 22px; color: #252423; background: linear-gradient(#ffffff, #e1dfdd); border-bottom: 5px solid #a19f9d;
+}
+.pptg-note .pptg-cap { color: #fff; text-shadow: 0 1px 2px rgba(80, 20, 0, .8); background: linear-gradient(#ff9a5a, #e8560c); border-bottom-color: #a33c0b; box-shadow: 0 0 18px rgba(255, 120, 40, .75); }
+.pptg-note.blind .pptg-cap { background: linear-gradient(#605e5c, #3b3a39); border-bottom-color: #201f1e; box-shadow: none; color: #c8c6c4; min-width: 120px; }
+.pptg-note.current:not(.blind) .pptg-cap { animation: pptgPulse .5s infinite alternate; }
+@keyframes pptgPulse { to { box-shadow: 0 0 30px 6px rgba(255, 150, 60, 1); transform: translateY(-2px); } }
+.pptg-note:not(.current):not(.done):not(.missed):not(.blind) { opacity: .55; }
+.pptg-note.done { animation: pptgBurst .6s forwards; }
+.pptg-note.done .pptg-cap { background: linear-gradient(#9ff59b, #16a516); border-bottom-color: #0b5a0b; box-shadow: 0 0 24px rgba(60, 255, 60, .9); }
+@keyframes pptgBurst { 0% { opacity: 1; transform: translateX(-50%) scale(1); } 60% { opacity: 1; transform: translateX(-50%) scale(1.15); } 100% { opacity: 0; transform: translateX(-50%) scale(1.35); } }
+.pptg-note.missed .pptg-cap { background: linear-gradient(#ff9a9a, #d92b2b); border-bottom-color: #7a1010; box-shadow: 0 0 18px rgba(255, 60, 60, .7); }
+.fall .pptg-note { animation: pptgFall .7s cubic-bezier(.35, .1, .45, 1) backwards; }
+.fall .pptg-note[data-i="1"] { animation-delay: .12s; }
+@keyframes pptgFall { from { opacity: 0; transform: translate(-50%, -260px); } 70% { opacity: 1; } to { transform: translate(-50%, 0); } }
+.pptg-steps { position: absolute; right: 14px; top: 10px; color: #c8c6c4; font-size: 13px; display: flex; align-items: center; gap: 6px; }
+.pptg-steps span { width: 24px; height: 24px; border-radius: 50%; border: 2px solid #605e5c; display: flex; align-items: center; justify-content: center; font-weight: 800; color: #c8c6c4; }
+.pptg-steps span.now { border-color: #ff8c42; color: #ff8c42; }
+.pptg-steps span.ok { border-color: #16a516; background: #16a516; color: #fff; }
+.pptg-steps i { font-style: normal; color: #8a8886; }
+
+/* touches tenues + dernière combinaison */
+.pptg-held { display: flex; align-items: center; gap: 8px; flex: none; }
+.pptg-held .pptg-cap { min-width: 54px; height: 36px; font-size: 15px; border-bottom-width: 4px; padding: 0 10px; color: #8a8886; }
+.pptg-held .pptg-cap.on { color: #fff; background: linear-gradient(#ffb27d, #ff6a1a); border-bottom-color: #a33c0b; box-shadow: 0 0 12px rgba(255, 120, 40, .7); }
+.pptg-typed { margin-left: 10px; font-size: 18px; font-weight: 700; color: #8a8886; }
+.pptg-typed.ok { color: #107c10; }
+.pptg-typed.ko { color: #e81123; }
+
+/* points gagnés */
+.pptg-pop { position: absolute; left: 0; right: 0; top: 200px; text-align: center; pointer-events: none; opacity: 0; z-index: 5; }
+.pptg-pop.show { animation: pptgPop 1.3s ease-out forwards; }
+.pptg-pop b { display: block; font-size: 60px; font-weight: 900; color: #ffb703; -webkit-text-stroke: 2px #a33c0b; text-shadow: 0 4px 0 #a33c0b, 0 0 24px rgba(255, 160, 0, .8); }
+.pptg-pop small { display: inline-block; font-size: 20px; font-weight: 800; color: #fff; background: #252423; border-radius: 20px; padding: 3px 16px; }
+@keyframes pptgPop { 0% { opacity: 0; transform: scale(.5); } 15% { opacity: 1; transform: scale(1.1); } 30% { transform: scale(1); } 80% { opacity: 1; } 100% { opacity: 0; transform: translateY(-40px); } }
+
+/* accueil */
+.pptg-slide.home { display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg, #fff 55%, #fbe4d9); }
+.pptg-home { text-align: center; max-width: 760px; }
+.pptg-kicker { display: inline-block; background: #c43e1c; color: #fff; font-weight: 700; font-size: 14px; padding: 4px 14px; border-radius: 20px; letter-spacing: .5px; }
+.pptg-home h1 { font-size: 72px; margin: 10px 0 8px; font-weight: 900; letter-spacing: -1px; color: #252423; }
+.pptg-home h1 span { color: #c43e1c; text-shadow: 0 0 20px rgba(255, 120, 40, .45); }
+.pptg-rules { text-align: left; font-size: 19px; line-height: 1.5; margin: 0 auto 18px; padding-left: 26px; max-width: 680px; }
+.pptg-row { display: flex; gap: 14px; justify-content: center; align-items: center; margin-top: 12px; flex-wrap: wrap; }
+.pptg-row.small { margin-top: 10px; }
+.pptg-btn { border: 0; border-radius: 8px; padding: 12px 24px; font-size: 18px; font-weight: 700; color: #fff; background: #c43e1c; box-shadow: 0 4px 0 #8a2a12; transition: transform .08s, filter .15s; }
+.pptg-btn:hover { filter: brightness(1.1); }
+.pptg-btn:active { transform: translateY(3px); box-shadow: 0 1px 0 #8a2a12; }
+.pptg-btn.big { font-size: 26px; padding: 14px 44px; }
+.pptg-btn.ghost { background: #fff; color: #c43e1c; border: 2px solid #c43e1c; box-shadow: 0 4px 0 #d2d0ce; }
+.pptg-btn[disabled] { filter: grayscale(1); opacity: .5; cursor: not-allowed; }
+.pptg-link { border: 0; background: none; color: #605e5c; font-size: 15px; text-decoration: underline; }
+.pptg-link:hover { color: #c43e1c; }
+.pptg-foot { margin-top: 16px; font-size: 13px; color: #8a8886; }
+.pptg-alert { background: #fde7e9; color: #a4262c; border-radius: 8px; padding: 8px 14px; font-size: 15px; margin: 8px auto; max-width: 640px; }
+.pptg-info { font-size: 13px; color: #8a8886; }
+
+/* pause */
+.pptg-pause { position: absolute; inset: 0; z-index: 20; display: none; align-items: center; justify-content: center; background: rgba(32, 31, 30, .6); }
+.pptg-pause.show { display: flex; }
+.pptg-panel { background: #fff; border-radius: 12px; padding: 26px 36px; text-align: center; box-shadow: 0 20px 50px rgba(0, 0, 0, .4); border-top: 6px solid #c43e1c; }
+.pptg-panel h2 { margin: 0 0 6px; font-size: 32px; }
+
+/* fin */
+.pptg-slide.end { left: 15px; width: 1080px; height: 520px; top: 11px; padding: 18px 28px; }
+.pptg-end-head { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 10px; }
+.pptg-end-score { font-size: 52px; font-weight: 900; color: #c43e1c; line-height: 1.05; margin-top: 4px; }
+.pptg-end-score small { font-size: 20px; color: #605e5c; font-weight: 600; }
+.pptg-end-rank { font-size: 20px; font-weight: 700; }
+.pptg-end-sum { display: flex; gap: 10px; }
+.pptg-end-sum span { background: #f3f2f1; border-radius: 8px; padding: 6px 12px; font-size: 14px; }
+.pptg-end-sum b { font-size: 20px; color: #252423; }
+.pptg-recap { width: 100%; border-collapse: collapse; font-size: 13.5px; }
+.pptg-recap th { text-align: left; font-size: 11px; text-transform: uppercase; letter-spacing: 1px; color: #8a8886; border-bottom: 2px solid #c43e1c; padding: 4px 6px; }
+.pptg-recap td { padding: 4px 6px; border-bottom: 1px solid #edebe9; line-height: 1.2; }
+.pptg-recap td:first-child { font-weight: 800; color: #8a8886; width: 24px; }
+.pptg-recap td.sc { font-weight: 700; white-space: nowrap; font-family: Consolas, 'Courier New', monospace; font-size: 13px; }
+.pptg-recap td.pts { text-align: right; font-weight: 800; white-space: nowrap; }
+.pptg-recap td.pts small { color: #c43e1c; }
+.pptg-recap tr.lv-facile td:first-child { box-shadow: inset 4px 0 #107c10; }
+.pptg-recap tr.lv-intermediaire td:first-child { box-shadow: inset 4px 0 #ca5010; }
+.pptg-recap tr.lv-difficile td:first-child { box-shadow: inset 4px 0 #a4262c; }
+.pptg-badge { font-size: 12px; font-weight: 700; border-radius: 12px; padding: 2px 10px; white-space: nowrap; }
+.pptg-badge.p1 { background: #dff6dd; color: #107c10; }
+.pptg-badge.p2 { background: #fff4ce; color: #8a6100; }
+.pptg-badge.ko { background: #fde7e9; color: #a4262c; }
+
+/* test */
+.pptg-test { text-align: center; }
+.pptg-test h2 { margin: 4px 0; font-size: 32px; }
+.pptg-test p { font-size: 15px; color: #605e5c; margin: 4px 0 14px; }
+.pptg-testgrid { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin-bottom: 12px; }
+.pptg-tchip { font-family: Consolas, monospace; font-weight: 700; font-size: 15px; padding: 6px 12px; border-radius: 6px; background: #f3f2f1; border: 2px solid #d2d0ce; color: #605e5c; }
+.pptg-tchip.hit { background: #dff6dd; border-color: #107c10; color: #107c10; }
+
+/* barre d'état */
+.pptg-status { position: absolute; left: 0; right: 0; bottom: 0; height: 28px; background: #f3f2f1; border-top: 1px solid #d2d0ce; display: flex; align-items: center; gap: 24px; padding: 0 14px; font-size: 12px; color: #605e5c; }
+.pptg-status-r { margin-left: auto; }
+
+</style>
+</head>
+<body>
+<div id="app"></div>
+
+<!-- ===== CONFIGURATION (modifiable sans toucher au jeu) ===== -->
+<script>
+/*
+ * ============================================================================
+ *  BANQUE DE RACCOURCIS POWERPOINT (Windows) · Raccourcis Hero
+ *  Ce fichier est la SEULE chose à modifier pour changer les questions.
+ *  La logique du jeu (ppt-game.js) le lit et le vérifie au chargement.
+ * ============================================================================
+ *
+ *  Une entrée = { label, combos, level }
+ *    label  : l'action affichée au joueur (sans le raccourci !)
+ *    combos : liste des combinaisons à taper DANS L'ORDRE
+ *             1 combinaison  -> question simple
+ *             2 combinaisons -> enchaînement (niveau difficile)
+ *    level  : 'facile' | 'intermediaire' | 'difficile'
+ *
+ *  Syntaxe d'une combinaison : modificateurs + touche, séparés par « + »
+ *    modificateurs : Ctrl, Maj (ou Shift), Alt      -> Cmd (Mac) compte comme Ctrl
+ *    touche        : une lettre a-z, un chiffre 0-9, ou F1 à F12
+ *    exemples      : 'Ctrl+C', 'Ctrl+Maj+V', 'Ctrl+Alt+V', 'F5', 'Maj+F5'
+ *
+ *  Vérification automatique au chargement : toute entrée qui contient une combinaison de la liste
+ *  `forbidden` (raccourcis que le navigateur ne laisse pas intercepter), la touche Windows, ou une
+ *  syntaxe invalide est EXCLUE de la partie (un avertissement est écrit dans la console).
+ *
+ * ----------------------------------------------------------------------------
+ *  NEUTRALISATION PAR NAVIGATEUR (Windows)
+ *  Tous les raccourcis de cette banque sont, à notre connaissance, interceptables avec
+ *  preventDefault() sur keydown dans Chrome, Edge et Firefox (aucun n'est « réservé » par le
+ *  navigateur). Ce point n'a PAS été vérifié à la main sur les trois navigateurs : faites-le avec
+ *  le « Test des raccourcis » de l'écran d'accueil, qui liste chaque combinaison de la banque.
+ *  Points d'attention connus, à confirmer avec ce test :
+ *    - Ctrl+Maj+C   : ouvre l'inspecteur des outils de développement (Chrome, Edge, Firefox)
+ *                     si l'événement n'est pas bloqué ; bloqué tant que la page a le focus.
+ *    - Ctrl+Alt+V   : en AZERTY, Alt Gr envoie Ctrl+Alt ; Alt Gr+V est donc accepté comme Ctrl+Alt+V.
+ *    - F5 / Maj+F5 / Ctrl+R : rechargement, bloqué pendant la partie (pas sur l'écran d'accueil).
+ *    - Si le focus est dans la barre d'adresse ou les outils de développement, la page ne reçoit
+ *      aucune touche : cliquer dans le jeu avant de jouer.
+ * ----------------------------------------------------------------------------
+ */
+(function () {
+  'use strict';
+  var NS = (window.PptShortcuts = window.PptShortcuts || {});
+
+  NS.config = {
+    // Déroulé d'une partie : 3 faciles, 4 intermédiaires, 3 difficiles (dans cet ordre)
+    levels: {
+      facile: { label: 'Facile', coef: 1, count: 3 },
+      intermediaire: { label: 'Intermédiaire', coef: 1.5, count: 4 },
+      difficile: { label: 'Difficile', coef: 2, count: 3 }
+    },
+    levelOrder: ['facile', 'intermediaire', 'difficile'],
+
+    // Durées en secondes
+    timing: { phase1: 10, phase2: 5, showAnswer: 1.5, afterSuccess: 1.1, intro: 0.7 },
+
+    // Points
+    scoring: {
+      phase1: { base: 1000, speed: 500 },  // + bonus proportionnel au temps restant
+      phase2: { base: 200, speed: 200 },
+      comboStep: 0.25,                     // +0,25 par réussite consécutive en phase 1
+      comboMax: 2
+    },
+
+    // Combinaisons que le navigateur/système ne laisse pas intercepter : jamais utilisées.
+    forbidden: [
+      'Ctrl+N', 'Ctrl+W', 'Ctrl+T', 'Ctrl+Maj+T', 'Ctrl+Maj+N', 'Ctrl+Maj+W',
+      'Ctrl+Tab', 'Ctrl+Maj+Tab', 'Ctrl+Maj+Q', 'Ctrl+Maj+P', 'Alt+F4', 'Alt+Tab', 'Ctrl+F4'
+    ],
+
+    shortcuts: [
+      // ---------- Facile : Ctrl + une lettre ----------
+      { label: 'Copier', combos: ['Ctrl+C'], level: 'facile' },
+      { label: 'Coller', combos: ['Ctrl+V'], level: 'facile' },
+      { label: 'Couper', combos: ['Ctrl+X'], level: 'facile' },
+      { label: 'Annuler', combos: ['Ctrl+Z'], level: 'facile' },
+      { label: 'Rétablir', combos: ['Ctrl+Y'], level: 'facile' },
+      { label: 'Enregistrer', combos: ['Ctrl+S'], level: 'facile' },
+      { label: 'Tout sélectionner', combos: ['Ctrl+A'], level: 'facile' },
+      { label: 'Nouvelle diapositive', combos: ['Ctrl+M'], level: 'facile' },
+      { label: 'Dupliquer', combos: ['Ctrl+D'], level: 'facile' },
+      { label: 'Italique', combos: ['Ctrl+I'], level: 'facile' },
+      { label: 'Souligner', combos: ['Ctrl+U'], level: 'facile' },
+
+      // ---------- Intermédiaire : 3 touches, touches de fonction ----------
+      { label: 'Reproduire la mise en forme', combos: ['Ctrl+Maj+C'], level: 'intermediaire' },
+      { label: 'Coller la mise en forme', combos: ['Ctrl+Maj+V'], level: 'intermediaire' },
+      { label: 'Collage spécial', combos: ['Ctrl+Alt+V'], level: 'intermediaire' },
+      { label: 'Centrer le texte', combos: ['Ctrl+E'], level: 'intermediaire' },
+      { label: 'Aligner à gauche', combos: ['Ctrl+L'], level: 'intermediaire' },
+      { label: 'Aligner à droite', combos: ['Ctrl+R'], level: 'intermediaire' },
+      { label: 'Justifier', combos: ['Ctrl+J'], level: 'intermediaire' },
+      { label: 'Insérer un lien hypertexte', combos: ['Ctrl+K'], level: 'intermediaire' },
+      { label: 'Lancer le diaporama depuis le début', combos: ['F5'], level: 'intermediaire' },
+      { label: 'Lancer le diaporama depuis la diapositive actuelle', combos: ['Maj+F5'], level: 'intermediaire' },
+      { label: 'Rechercher', combos: ['Ctrl+F'], level: 'intermediaire' },
+
+      // ---------- Difficile : enchaînements de 2 raccourcis ----------
+      { label: 'Dupliquer la diapositive, puis lancer le diaporama depuis celle-ci', combos: ['Ctrl+D', 'Maj+F5'], level: 'difficile' },
+      { label: 'Reproduire la mise en forme, puis la coller sur un autre objet', combos: ['Ctrl+Maj+C', 'Ctrl+Maj+V'], level: 'difficile' },
+      { label: 'Tout sélectionner, puis centrer le texte', combos: ['Ctrl+A', 'Ctrl+E'], level: 'difficile' },
+      { label: 'Couper, puis faire un collage spécial', combos: ['Ctrl+X', 'Ctrl+Alt+V'], level: 'difficile' },
+      { label: 'Ajouter une nouvelle diapositive, puis enregistrer', combos: ['Ctrl+M', 'Ctrl+S'], level: 'difficile' },
+      { label: 'Tout sélectionner, puis justifier', combos: ['Ctrl+A', 'Ctrl+J'], level: 'difficile' },
+      { label: 'Copier, puis coller la mise en forme', combos: ['Ctrl+C', 'Ctrl+Maj+V'], level: 'difficile' },
+      { label: 'Annuler, puis finalement rétablir', combos: ['Ctrl+Z', 'Ctrl+Y'], level: 'difficile' }
+    ]
+  };
+})();
+
+</script>
+
+<!-- ===== MOTEUR DU JEU ===== -->
+<script>
+/*
+ * ============================================================================
+ *  RACCOURCIS HERO · mini-jeu de raccourcis PowerPoint (module autonome)
+ * ============================================================================
+ *  Interface publique (seul nom exposé : window.PptShortcuts) :
+ *
+ *    var game = PptShortcuts.createGame(container, {
+ *      config:     PptShortcuts.config,        // optionnel (banque de raccourcis)
+ *      onGameEnd:  function ({ score, details }) {},
+ *      sfx:        function (name) {},         // optionnel : sons fournis par l'hôte
+ *      onQuit:     function () {},             // optionnel : bouton « Quitter » sur l'accueil
+ *      endActions: [{ label, primary, onClick }] // optionnel : boutons en plus sur l'écran de fin
+ *    });
+ *    game.start();    // lance directement une partie (sinon l'écran d'accueil propose « Jouer »)
+ *    game.destroy();  // retire tout (DOM, écouteurs, verrouillage clavier)
+ *
+ *    PptShortcuts.loadConfig(config) -> { pools, excluded, errors }   (vérification de la banque)
+ *
+ *  Le jeu dessine une planche de 1280 x 720 px mise à l'échelle dans `container`.
+ *  Pendant une partie, TOUTES les touches sont interceptées (capture + preventDefault) ;
+ *  sur l'accueil et l'écran de fin, le navigateur retrouve son comportement normal.
+ *  Échap est la seule touche réservée : elle met la partie en pause.
+ */
+(function () {
+  'use strict';
+  var NS = (window.PptShortcuts = window.PptShortcuts || {});
+
+  var W = 1280, H = 720;
+  var MODIFIER_KEYS = ['Control', 'Shift', 'Alt', 'Meta', 'AltGraph', 'OS', 'CapsLock', 'Fn', 'FnLock', 'NumLock', 'Hyper', 'Super'];
+
+  // ======================================================================
+  //  Combinaisons : lecture de la config et des événements clavier
+  // ======================================================================
+  function parseCombo(str) {
+    if (typeof str !== 'string' || !str.trim()) throw new Error('combinaison vide');
+    var c = { ctrl: false, shift: false, alt: false, key: null };
+    str.split('+').map(function (s) { return s.trim(); }).forEach(function (p) {
+      var u = p.toLowerCase();
+      if (!u) throw new Error('syntaxe invalide « ' + str + ' »');
+      if (u === 'ctrl' || u === 'control' || u === 'cmd' || u === 'ctl') c.ctrl = true;
+      else if (u === 'maj' || u === 'shift') c.shift = true;
+      else if (u === 'alt') c.alt = true;
+      else if (['win', 'windows', 'meta', 'super', 'os', 'altgr'].indexOf(u) >= 0) throw new Error('touche « ' + p + ' » non interceptable');
+      else {
+        if (c.key) throw new Error('deux touches principales dans « ' + str + ' »');
+        if (/^f([1-9]|1[0-2])$/.test(u)) c.key = u.toUpperCase();
+        else if (/^[a-z0-9]$/.test(u)) c.key = u;
+        else if (u === 'tab' || u === 'tabulation') c.key = 'Tab';
+        else throw new Error('touche inconnue « ' + p + ' »');
+      }
+    });
+    if (!c.key) throw new Error('aucune touche principale dans « ' + str + ' »');
+    return c;
+  }
+
+  function keyName(k) { return k.length === 1 ? k.toUpperCase() : k; }
+
+  function comboId(c) {
+    var parts = [];
+    if (c.ctrl) parts.push('Ctrl');
+    if (c.shift) parts.push('Maj');
+    if (c.alt) parts.push('Alt');
+    parts.push(keyName(c.key));
+    return parts.join('+');
+  }
+
+  function sameCombo(a, b) {
+    return a.ctrl === b.ctrl && a.shift === b.shift && a.alt === b.alt && a.key === b.key;
+  }
+
+  /** Traduit un keydown en combinaison. null pour une touche de modification seule. */
+  function eventCombo(e) {
+    if (MODIFIER_KEYS.indexOf(e.key) >= 0 || e.key === 'Dead' || e.key === 'Unidentified' && !e.code) return null;
+    // Alt Gr (AZERTY) arrive comme Ctrl+Alt : on le traite comme tel.
+    var altGr = !!(e.getModifierState && e.getModifierState('AltGraph'));
+    var c = {
+      ctrl: !!(e.ctrlKey || e.metaKey || altGr), // Cmd (Mac) = Ctrl
+      shift: !!e.shiftKey,
+      alt: !!(e.altKey || altGr),
+      key: null
+    };
+    var k = e.key || '';
+    if (/^F([1-9]|1[0-2])$/.test(k) || k === 'Tab') c.key = k;
+    else {
+      var low = k.toLowerCase();
+      if (/^[a-z0-9]$/.test(low)) c.key = low; // cas normal : la lettre du clavier de l'utilisateur (AZERTY ou QWERTY)
+      else if (/^Key[A-Z]$/.test(e.code || '')) c.key = e.code.slice(3).toLowerCase(); // Alt Gr/Ctrl+Alt produit un autre caractère (ex. €)
+      else if (/^Digit[0-9]$/.test(e.code || '')) c.key = e.code.slice(5); // AZERTY : chiffres sous Maj
+      else c.key = k || e.code || '?';
+    }
+    return c;
+  }
+
+  // ======================================================================
+  //  Vérification de la banque au chargement
+  // ======================================================================
+  NS.loadConfig = function (raw) {
+    var cfg = raw || NS.config;
+    var errors = [], excluded = [], pools = {};
+    if (!cfg || !Array.isArray(cfg.shortcuts)) {
+      return { cfg: cfg, pools: pools, excluded: excluded, errors: ['Configuration absente ou invalide (shortcuts manquant).'] };
+    }
+    (cfg.levelOrder || []).forEach(function (l) { pools[l] = []; });
+    var forbidden = {};
+    (cfg.forbidden || []).forEach(function (f) {
+      try { forbidden[comboId(parseCombo(f))] = true; } catch (e) { /* entrée interdite mal écrite : ignorée */ }
+    });
+    var seen = {};
+    cfg.shortcuts.forEach(function (s, i) {
+      var where = 'Entrée n°' + (i + 1) + (s && s.label ? ' « ' + s.label + ' »' : '');
+      try {
+        if (!s || typeof s.label !== 'string' || !s.label.trim()) throw new Error('libellé manquant');
+        if (!cfg.levels || !cfg.levels[s.level]) throw new Error('niveau inconnu « ' + s.level + ' »');
+        var list = Array.isArray(s.combos) ? s.combos : [s.combos];
+        if (!list.length) throw new Error('aucune combinaison');
+        var combos = list.map(parseCombo);
+        combos.forEach(function (c) {
+          if (forbidden[comboId(c)]) throw new Error(comboId(c) + ' ne peut pas être intercepté par le navigateur');
+        });
+        var key = s.label.trim().toLowerCase();
+        if (seen[key]) throw new Error('libellé en double');
+        seen[key] = true;
+        pools[s.level].push({
+          label: s.label.trim(),
+          level: s.level,
+          combos: combos,
+          text: combos.map(comboId).join(' puis ')
+        });
+      } catch (err) {
+        excluded.push(where + ' : ' + err.message);
+      }
+    });
+    (cfg.levelOrder || []).forEach(function (l) {
+      var need = (cfg.levels[l] && cfg.levels[l].count) || 0;
+      if (pools[l].length < need) errors.push('Niveau « ' + l + ' » : ' + pools[l].length + ' raccourci(s) valide(s), il en faut au moins ' + need + '.');
+    });
+    if (excluded.length && window.console) console.warn('[Raccourcis Hero] entrées exclues de la banque :\n- ' + excluded.join('\n- '));
+    return { cfg: cfg, pools: pools, excluded: excluded, errors: errors };
+  };
+
+  // ======================================================================
+  //  Utilitaires
+  // ======================================================================
+  function el(tag, cls, html) {
+    var e = document.createElement(tag);
+    if (cls) e.className = cls;
+    if (html != null) e.innerHTML = html;
+    return e;
+  }
+  function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
+  function shuffle(a) {
+    a = a.slice();
+    for (var i = a.length - 1; i > 0; i--) { var j = Math.floor(Math.random() * (i + 1)); var t = a[i]; a[i] = a[j]; a[j] = t; }
+    return a;
+  }
+  function fmt(n) { return Math.round(n).toLocaleString('fr-FR'); }
+  function fmtCoef(x) { return '×' + String(Math.round(x * 100) / 100).replace('.', ','); }
+  function capsHTML(c, cls) {
+    var caps = [];
+    if (c.ctrl) caps.push('Ctrl');
+    if (c.shift) caps.push('Maj');
+    if (c.alt) caps.push('Alt');
+    caps.push(keyName(c.key));
+    return caps.map(function (k) { return '<span class="pptg-cap ' + (cls || '') + '">' + k + '</span>'; }).join('<i class="pptg-plus">+</i>');
+  }
+
+  // Petits sons de secours si l'hôte n'en fournit pas
+  var ac = null;
+  function beep(freq, dur, type, vol, delay) {
+    try {
+      var C = window.AudioContext || window.webkitAudioContext;
+      if (!C) return;
+      ac = ac || new C();
+      if (ac.state === 'suspended') ac.resume();
+      var t = ac.currentTime + (delay || 0), o = ac.createOscillator(), g = ac.createGain();
+      o.type = type || 'sine'; o.frequency.setValueAtTime(freq, t);
+      g.gain.setValueAtTime(vol || 0.08, t); g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+      o.connect(g); g.connect(ac.destination); o.start(t); o.stop(t + dur + 0.05);
+    } catch (e) { /* pas de son */ }
+  }
+  var DEFAULT_SFX = {
+    ding: function () { beep(880, 0.2); beep(1320, 0.3, 'sine', 0.07, 0.1); },
+    error: function () { beep(200, 0.25, 'square', 0.05); },
+    pop: function () { beep(600, 0.08, 'triangle', 0.07); },
+    tick: function () { beep(1000, 0.04, 'square', 0.03); },
+    alarm: function () { beep(520, 0.12, 'square', 0.04); beep(660, 0.12, 'square', 0.04, 0.12); },
+    win: function () { [523, 659, 784, 1046].forEach(function (f, i) { beep(f, 0.3, 'triangle', 0.08, i * 0.12); }); },
+    lose: function () { [392, 330, 262].forEach(function (f, i) { beep(f, 0.35, 'triangle', 0.08, i * 0.18); }); },
+    promo: function () { [523, 659, 784, 1046, 1318].forEach(function (f, i) { beep(f, 0.18, 'square', 0.04, i * 0.07); }); }
+  };
+
+  function isTouchOnly() {
+    var mm = window.matchMedia;
+    if (!mm) return false;
+    return mm('(pointer: coarse)').matches && !mm('(pointer: fine)').matches && !mm('(hover: hover)').matches;
+  }
+
+  // ======================================================================
+  //  Le jeu
+  // ======================================================================
+  NS.createGame = function (container, opts) {
+    opts = opts || {};
+    var loaded = NS.loadConfig(opts.config || NS.config);
+    var cfg = loaded.cfg;
+    var sfx = typeof opts.sfx === 'function' ? opts.sfx : function (n) { if (DEFAULT_SFX[n]) DEFAULT_SFX[n](); };
+
+    // ---------- DOM ----------
+    var root = el('div', 'pptg');
+    var board = el('div', 'pptg-board');
+    root.appendChild(board);
+    container.appendChild(root);
+
+    var RIBBON_TABS = ['Fichier', 'Accueil', 'Insertion', 'Dessin', 'Création', 'Transitions', 'Animations', 'Diaporama', 'Révision', 'Affichage'];
+    board.innerHTML =
+      '<div class="pptg-titlebar"><span class="pptg-logo">P</span><span>Présentation_COPIL_v12_FINAL_def(3).pptx · PowerPoint</span>' +
+      '<span class="pptg-win"><i>–</i><i>▢</i><i>✕</i></span></div>' +
+      '<div class="pptg-tabs">' + RIBBON_TABS.map(function (t) { return '<span' + (t === 'Accueil' ? ' class="on"' : '') + '>' + t + '</span>'; }).join('') + '</div>' +
+      '<div class="pptg-ribbon">' +
+      '<div class="pptg-group"><div class="pptg-gicons"><b>📋</b><span>Coller</span><span>✂ Couper</span><span>⧉ Copier</span></div><small>Presse-papiers</small></div>' +
+      '<div class="pptg-group"><div class="pptg-gicons"><b>🗎</b><span>Nouvelle<br>diapositive</span></div><small>Diapositives</small></div>' +
+      '<div class="pptg-group"><div class="pptg-gicons font"><span><b>G</b></span><span><i>I</i></span><span><u>S</u></span><span>ab</span></div><small>Police</small></div>' +
+      '<div class="pptg-group"><div class="pptg-gicons"><span>≡</span><span>☰</span><span>≣</span></div><small>Paragraphe</small></div>' +
+      '<div class="pptg-hud">' +
+      '<div class="pptg-hud-box"><small>Score</small><b data-h="score">0</b></div>' +
+      '<div class="pptg-hud-box combo" data-h="combobox"><small>Combo</small><b data-h="combo">×1</b><span class="pptg-flame"><i></i><i></i><i></i></span></div>' +
+      '<div class="pptg-hud-box"><small>Question</small><b data-h="qnum">–/10</b></div>' +
+      '</div></div>' +
+      '<div class="pptg-main">' +
+      '<div class="pptg-thumbs"></div>' +
+      '<div class="pptg-stagearea"><div class="pptg-slide"></div></div>' +
+      '</div>' +
+      '<div class="pptg-status"><span data-h="status">Diapositive 1 sur 10</span><span>Français (France)</span><span class="pptg-status-r">Échap : pause · 🗒 Notes · ▦ ▤ ▶ · 100 %</span></div>' +
+      '<div class="pptg-pause"><div class="pptg-panel small"><h2>⏸ Pause</h2><p>Le chrono est arrêté.</p><div class="pptg-row"><button class="pptg-btn" data-a="resume">Reprendre (Échap)</button><button class="pptg-btn ghost" data-a="abandon">Abandonner la partie</button></div></div></div>';
+
+    var $ = function (s) { return board.querySelector(s); };
+    var hud = {};
+    board.querySelectorAll('[data-h]').forEach(function (e) { hud[e.getAttribute('data-h')] = e; });
+    var slide = $('.pptg-slide');
+    var thumbs = $('.pptg-thumbs');
+    var pauseEl = $('.pptg-pause');
+
+    // mise à l'échelle de la planche 1280x720 dans le conteneur
+    function fit() {
+      var w = root.clientWidth, h = root.clientHeight;
+      if (!w || !h) return;
+      var s = Math.min(w / W, h / H);
+      board.style.transform = 'translate(' + Math.round((w - W * s) / 2) + 'px,' + Math.round((h - H * s) / 2) + 'px) scale(' + s + ')';
+    }
+    var ro = null;
+    if (window.ResizeObserver) { ro = new ResizeObserver(fit); ro.observe(root); }
+    window.addEventListener('resize', fit);
+    fit();
+
+    // pas de menu contextuel ni de sélection dans la zone de jeu
+    function noContext(e) { e.preventDefault(); }
+    root.addEventListener('contextmenu', noContext);
+
+    // ---------- état ----------
+    var screen = 'home';
+    var questions = [], qi = -1, q = null;
+    var score = 0, combo = 1, details = [];
+    var raf = 0, paused = false, pauseStart = 0, pausedTotal = 0;
+    var held = { ctrl: false, shift: false, alt: false };
+    var blocking = false, destroyed = false, keyboardLocked = false;
+    var lastTickSec = -1;
+
+    function now() { return performance.now() - pausedTotal; }
+
+    // ======================================================================
+    //  Neutralisation du clavier (uniquement pendant la partie et le test)
+    // ======================================================================
+    function onKeyDown(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      if (e.stopImmediatePropagation) e.stopImmediatePropagation();
+      updateHeld(e, true);
+      if (e.key === 'Escape') { if (screen === 'playing') togglePause(); else if (screen === 'test') showHome(); return; }
+      if (paused || e.repeat) return;
+      var c = eventCombo(e);
+      if (!c) return; // Ctrl, Maj, Alt seuls : ignorés
+      if (screen === 'playing') handleCombo(c);
+      else if (screen === 'test') handleTest(c);
+    }
+    function onKeyUp(e) {
+      e.preventDefault(); // Alt relâché seul ouvrirait la barre de menus de certains navigateurs
+      e.stopPropagation();
+      if (e.stopImmediatePropagation) e.stopImmediatePropagation();
+      updateHeld(e, false);
+    }
+    function swallow(e) { e.preventDefault(); e.stopPropagation(); }
+    function onBlur() { held = { ctrl: false, shift: false, alt: false }; renderHeld(); }
+
+    function setBlocking(on) {
+      if (on === blocking) return;
+      blocking = on;
+      var o = { capture: true };
+      var fn = on ? 'addEventListener' : 'removeEventListener';
+      window[fn]('keydown', onKeyDown, o);
+      window[fn]('keyup', onKeyUp, o);
+      window[fn]('keypress', swallow, o);
+      window[fn]('blur', onBlur);
+      root.classList.toggle('pptg-capturing', on);
+    }
+
+    function updateHeld(e, down) {
+      var k = e.key;
+      if (k === 'Control' || k === 'Meta') held.ctrl = down;
+      else if (k === 'Shift') held.shift = down;
+      else if (k === 'Alt' || k === 'AltGraph') held.alt = down;
+      else {
+        held.ctrl = !!(e.ctrlKey || e.metaKey);
+        held.shift = !!e.shiftKey;
+        held.alt = !!e.altKey;
+      }
+      renderHeld();
+    }
+
+    // Bonus : plein écran + Keyboard Lock (Chrome / Edge)
+    var canLock = !!(navigator.keyboard && navigator.keyboard.lock && document.documentElement.requestFullscreen);
+    function enterLockMode() {
+      var p = root.requestFullscreen ? root.requestFullscreen() : document.documentElement.requestFullscreen();
+      return Promise.resolve(p).then(function () {
+        return navigator.keyboard.lock();
+      }).then(function () { keyboardLocked = true; }).catch(function () { keyboardLocked = false; });
+    }
+    function exitLockMode() {
+      try { if (navigator.keyboard && navigator.keyboard.unlock) navigator.keyboard.unlock(); } catch (e) { /* ignoré */ }
+      keyboardLocked = false;
+    }
+
+    // ======================================================================
+    //  Écran d'accueil
+    // ======================================================================
+    function showHome() {
+      stopLoop();
+      setBlocking(false);
+      screen = 'home';
+      resetHud();
+      renderThumbs();
+      var problems = loaded.errors.length
+        ? '<div class="pptg-alert">⚠ Banque de raccourcis incomplète :<br>' + loaded.errors.map(esc).join('<br>') + '</div>' : '';
+      var excludedNote = loaded.excluded.length
+        ? '<div class="pptg-info">' + loaded.excluded.length + ' entrée(s) exclue(s) de la banque (voir la console).</div>' : '';
+      var touch = isTouchOnly()
+        ? '<div class="pptg-alert">⌨️ Ce jeu se joue avec un <b>clavier physique</b>. Branche un clavier pour jouer.</div>' : '';
+      slide.className = 'pptg-slide home';
+      slide.innerHTML =
+        '<div class="pptg-home">' +
+        '<div class="pptg-kicker">PowerPoint × jeu de rythme</div>' +
+        '<h1>Raccourcis <span>Hero</span></h1>' +
+        '<ol class="pptg-rules">' +
+        '<li><b>10 actions PowerPoint</b> s\'affichent : tape le raccourci de mémoire en <b>10 s</b>.</li>' +
+        '<li>Raté ? Le raccourci tombe sur la ligne : tu as encore <b>5 s</b> (moins de points).</li>' +
+        '<li>Enchaîne les réussites à l\'aveugle pour faire <b>flamber le combo</b> (jusqu\'à ×2).</li>' +
+        '</ol>' + touch + problems + excludedNote +
+        '<div class="pptg-row">' +
+        '<button class="pptg-btn big" data-a="play"' + (loaded.errors.length ? ' disabled' : '') + '>▶ Jouer</button>' +
+        (canLock ? '<button class="pptg-btn ghost" data-a="lock" title="Chrome / Edge : capture encore plus de combinaisons">⛶ Plein écran + verrouillage clavier</button>' : '') +
+        '</div>' +
+        '<div class="pptg-row small">' +
+        '<button class="pptg-link" data-a="test">🧪 Tester les raccourcis sur ce navigateur</button>' +
+        (opts.onQuit ? '<button class="pptg-link" data-a="quit">✕ Quitter</button>' : '') +
+        '</div>' +
+        '<div class="pptg-foot">AZERTY et QWERTY · Cmd = Ctrl sur Mac · Échap = pause</div>' +
+        '</div>';
+      bind(slide, 'play', function () { start(); });
+      bind(slide, 'lock', function () { enterLockMode().then(start); });
+      bind(slide, 'test', showTest);
+      bind(slide, 'quit', function () { if (opts.onQuit) opts.onQuit(); });
+    }
+
+    function bind(scope, action, fn) {
+      var b = scope.querySelector('[data-a="' + action + '"]');
+      if (b) b.addEventListener('click', function (e) { e.preventDefault(); b.blur(); fn(); });
+    }
+
+    // ======================================================================
+    //  Partie
+    // ======================================================================
+    function pickQuestions() {
+      var list = [];
+      cfg.levelOrder.forEach(function (lvl) {
+        shuffle(loaded.pools[lvl]).slice(0, cfg.levels[lvl].count).forEach(function (entry) { list.push(entry); });
+      });
+      return list;
+    }
+
+    function start() {
+      if (destroyed || loaded.errors.length) return;
+      stopLoop();
+      questions = pickQuestions();
+      qi = -1; score = 0; combo = 1; details = [];
+      paused = false; pausedTotal = 0;
+      pauseEl.classList.remove('show');
+      screen = 'playing';
+      setBlocking(true);
+      if (document.activeElement && document.activeElement.blur) document.activeElement.blur();
+      renderThumbs();
+      updateHud();
+      nextQuestion();
+      raf = requestAnimationFrame(loop);
+    }
+
+    function nextQuestion() {
+      qi++;
+      if (qi >= questions.length) { endGame(); return; }
+      var entry = questions[qi];
+      var lvl = cfg.levels[entry.level];
+      q = {
+        entry: entry, coef: lvl.coef, levelLabel: lvl.label,
+        phase: 'intro', step: 0, until: now() + cfg.timing.intro * 1000, deadline: 0
+      };
+      lastTickSec = -1;
+      renderQuestion();
+      renderThumbs();
+      updateHud();
+    }
+
+    function startPhase(p) {
+      q.phase = p;
+      var dur = (p === 'p1' ? cfg.timing.phase1 : cfg.timing.phase2) * 1000;
+      q.deadline = now() + dur;
+      q.duration = dur;
+      lastTickSec = -1;
+      slide.classList.remove('intro');
+      slide.classList.toggle('revealed', p === 'p2');
+      setPhaseText();
+      renderNotes(p === 'p2');
+      if (p === 'p2') sfx('alarm');
+    }
+
+    function loop() {
+      if (destroyed || screen !== 'playing') return;
+      if (!paused && q) {
+        var t = now();
+        if (q.phase === 'intro' && t >= q.until) startPhase('p1');
+        else if (q.phase === 'p1' || q.phase === 'p2') {
+          var left = Math.max(0, q.deadline - t);
+          renderTimer(left / q.duration, left / 1000);
+          var sec = Math.ceil(left / 1000);
+          if (q.phase === 'p2' && sec !== lastTickSec && sec <= 3 && sec > 0) { lastTickSec = sec; sfx('tick'); }
+          if (left <= 0) {
+            if (q.phase === 'p1') startPhase('p2');
+            else miss();
+          }
+        } else if ((q.phase === 'success' || q.phase === 'missed') && t >= q.until) {
+          nextQuestion();
+        }
+      }
+      raf = requestAnimationFrame(loop);
+    }
+    function stopLoop() { cancelAnimationFrame(raf); raf = 0; }
+
+    // ---------- reconnaissance d'une combinaison ----------
+    function handleCombo(c) {
+      if (!q || (q.phase !== 'p1' && q.phase !== 'p2')) return;
+      var combos = q.entry.combos;
+      showTyped(c);
+      if (sameCombo(c, combos[q.step])) {
+        q.step++;
+        if (q.step >= combos.length) succeed();
+        else { sfx('pop'); stepDone(); }
+        return;
+      }
+      // mauvaise combinaison : on ne perd pas la question, mais un enchaînement repart du début
+      var restart = combos.length > 1 && q.step > 0 && sameCombo(c, combos[0]);
+      q.step = restart ? 1 : 0;
+      wrong(c);
+    }
+
+    function succeed() {
+      var left = Math.max(0, q.deadline - now()) / 1000;
+      var pts, phase = q.phase, usedCombo = combo;
+      if (phase === 'p1') {
+        var s1 = cfg.scoring.phase1;
+        pts = (s1.base + s1.speed * left / cfg.timing.phase1) * q.coef * combo;
+        combo = Math.min(cfg.scoring.comboMax, combo + cfg.scoring.comboStep);
+      } else {
+        var s2 = cfg.scoring.phase2;
+        pts = (s2.base + s2.speed * left / cfg.timing.phase2) * q.coef;
+        combo = 1;
+        usedCombo = 1;
+      }
+      pts = Math.round(pts);
+      score += pts;
+      details.push({
+        index: qi + 1, action: q.entry.label, level: q.entry.level, shortcut: q.entry.text,
+        result: phase === 'p1' ? 'phase1' : 'phase2', points: pts, combo: usedCombo,
+        time: Math.round((q.duration - left * 1000) / 100) / 10
+      });
+      q.phase = 'success';
+      q.until = now() + cfg.timing.afterSuccess * 1000;
+      sfx(phase === 'p1' ? 'ding' : 'pop');
+      if (phase === 'p1' && combo >= 1.75) sfx('promo');
+      renderNotes(true, 'success');
+      flash('ok');
+      popup('+' + fmt(pts), phase === 'p1' ? (usedCombo > 1 ? 'PARFAIT ! ' + fmtCoef(usedCombo) : 'PARFAIT !') : 'De justesse !');
+      renderThumbs();
+      updateHud(true);
+    }
+
+    function miss() {
+      combo = 1;
+      details.push({
+        index: qi + 1, action: q.entry.label, level: q.entry.level, shortcut: q.entry.text,
+        result: 'missed', points: 0, combo: 1, time: null
+      });
+      q.phase = 'missed';
+      q.until = now() + cfg.timing.showAnswer * 1000;
+      sfx('error');
+      renderTimer(0, 0);
+      renderNotes(true, 'missed');
+      flash('ko');
+      popup('0 pt', 'Raté… la réponse était : ' + q.entry.text);
+      renderThumbs();
+      updateHud();
+    }
+
+    function wrong(c) {
+      sfx('error');
+      flash('ko');
+      slide.classList.remove('shake');
+      void slide.offsetWidth;
+      slide.classList.add('shake');
+      renderNotes(q.phase === 'p2');
+    }
+
+    function stepDone() {
+      renderNotes(q.phase === 'p2');
+      var line = slide.querySelector('.pptg-line');
+      if (line) { line.classList.remove('hit'); void line.offsetWidth; line.classList.add('hit'); }
+    }
+
+    function togglePause() {
+      if (screen !== 'playing') return;
+      paused = !paused;
+      if (paused) { pauseStart = performance.now(); pauseEl.classList.add('show'); }
+      else { pausedTotal += performance.now() - pauseStart; pauseEl.classList.remove('show'); }
+    }
+    bind(pauseEl, 'resume', togglePause);
+    bind(pauseEl, 'abandon', function () { togglePause(); showHome(); });
+
+    function endGame() {
+      stopLoop();
+      screen = 'end';
+      setBlocking(false);
+      exitLockMode();
+      q = null;
+      renderThumbs();
+      updateHud();
+      renderEnd();
+      sfx('win');
+      var result = { score: score, details: details.slice() };
+      if (typeof opts.onGameEnd === 'function') {
+        try { opts.onGameEnd(result); } catch (e) { if (window.console) console.error(e); }
+      }
+    }
+
+    // ======================================================================
+    //  Rendu
+    // ======================================================================
+    function resetHud() {
+      hud.score.textContent = '0';
+      hud.combo.textContent = '×1';
+      hud.qnum.textContent = '–/10';
+      hud.combobox.className = 'pptg-hud-box combo';
+      hud.status.textContent = 'Diapositive 1 sur ' + totalQuestions();
+    }
+    function totalQuestions() {
+      return cfg.levelOrder.reduce(function (n, l) { return n + cfg.levels[l].count; }, 0);
+    }
+
+    function updateHud(bump) {
+      var n = totalQuestions();
+      hud.score.textContent = fmt(score);
+      hud.combo.textContent = fmtCoef(combo);
+      var cur = Math.min(n, Math.max(1, qi + 1));
+      hud.qnum.textContent = (screen === 'playing' ? cur : n) + '/' + n;
+      hud.status.textContent = 'Diapositive ' + cur + ' sur ' + n + ' · Score ' + fmt(score) + ' · Combo ' + fmtCoef(combo);
+      var heat = combo >= 2 ? 'max' : combo >= 1.5 ? 'hot' : combo > 1 ? 'warm' : '';
+      hud.combobox.className = 'pptg-hud-box combo ' + heat;
+      if (bump) {
+        hud.score.classList.remove('bump'); void hud.score.offsetWidth; hud.score.classList.add('bump');
+      }
+    }
+
+    function renderThumbs() {
+      var n = totalQuestions(), out = '';
+      for (var i = 0; i < n; i++) {
+        var d = details[i];
+        var st = d ? d.result : (screen === 'playing' && i === qi ? 'current' : 'todo');
+        var lvl = questions[i] ? questions[i].level : cfg.levelOrder[i < 3 ? 0 : i < 7 ? 1 : 2];
+        out += '<div class="pptg-thumb ' + st + ' lv-' + lvl + '"><span>' + (i + 1) + '</span><div class="pptg-mini">' +
+          (d ? (d.result === 'missed' ? '✕' : '✓') : (st === 'current' ? '…' : '')) + '</div></div>';
+      }
+      thumbs.innerHTML = out;
+    }
+
+    function renderQuestion() {
+      var e = q.entry, chain = e.combos.length > 1;
+      slide.className = 'pptg-slide play intro lv-' + e.level;
+      slide.innerHTML =
+        '<div class="pptg-qhead"><span class="pptg-level">' + q.levelLabel + ' · ' + fmtCoef(q.coef) + '</span>' +
+        '<span class="pptg-qn">Question ' + (qi + 1) + ' / ' + totalQuestions() + '</span></div>' +
+        '<div class="pptg-action">' + esc(e.label) + '</div>' +
+        '<div class="pptg-phase"></div>' +
+        '<div class="pptg-timer"><i></i><b></b></div>' +
+        '<div class="pptg-track' + (chain ? ' chain' : '') + '"><div class="pptg-lanes"></div><div class="pptg-notes"></div><div class="pptg-line"></div>' +
+        (chain ? '<div class="pptg-steps"></div>' : '') + '</div>' +
+        '<div class="pptg-held"><span class="pptg-cap mod" data-m="ctrl">Ctrl</span><span class="pptg-cap mod" data-m="shift">Maj</span><span class="pptg-cap mod" data-m="alt">Alt</span>' +
+        '<span class="pptg-typed">Tape la combinaison…</span></div>' +
+        '<div class="pptg-pop"></div>';
+      setPhaseText();
+      renderTimer(1, cfg.timing.phase1);
+      renderNotes(false);
+      renderHeld();
+    }
+
+    function setPhaseText() {
+      var ph = slide.querySelector('.pptg-phase');
+      if (!ph) return;
+      var chain = q.entry.combos.length > 1;
+      if (q.phase === 'intro') ph.innerHTML = 'Prépare-toi…';
+      else if (q.phase === 'p1') ph.innerHTML = '🙈 <b>À l\'aveugle</b> · tape le raccourci de mémoire' + (chain ? ' (2 raccourcis, dans l\'ordre)' : '');
+      else if (q.phase === 'p2') ph.innerHTML = '🎸 <b>Raccourci révélé</b> · vite, tape-le !';
+    }
+
+    function renderTimer(f, secLeft) {
+      var t = slide.querySelector('.pptg-timer');
+      if (!t) return;
+      f = Math.max(0, Math.min(1, f));
+      var i = t.querySelector('i');
+      i.style.width = (f * 100) + '%';
+      // du vert (120°) au rouge (0°)
+      i.style.background = 'hsl(' + Math.round(120 * f) + ', 75%, 45%)';
+      t.querySelector('b').textContent = secLeft.toFixed(1).replace('.', ',') + ' s';
+      t.classList.toggle('urgent', f < 0.3);
+    }
+
+    function renderNotes(revealed, outcome) {
+      var notes = slide.querySelector('.pptg-notes');
+      if (!notes) return;
+      var combos = q.entry.combos, chain = combos.length > 1;
+      var html = '';
+      combos.forEach(function (c, i) {
+        var cls = 'pptg-note';
+        var offset = (i - q.step) * 96; // le raccourci attendu est sur la ligne, le suivant au-dessus
+        if (i < q.step) cls += ' done';
+        if (outcome === 'success') cls += ' done';
+        if (outcome === 'missed') cls += ' missed';
+        if (!revealed) cls += ' blind';
+        if (i === q.step && !outcome) cls += ' current';
+        var content = revealed ? capsHTML(c) : '<span class="pptg-cap blind">?</span>';
+        if (outcome === 'missed') offset = i * 96;
+        html += '<div class="' + cls + '" style="bottom:' + (34 + Math.max(0, offset)) + 'px" data-i="' + i + '">' +
+          (chain ? '<em>' + (i + 1) + '</em>' : '') + content + '</div>';
+      });
+      notes.innerHTML = html;
+      if (revealed && !outcome && !notes.dataset.fallen) {
+        notes.dataset.fallen = '1';
+        notes.classList.add('fall'); // les touches « tombent » vers la ligne (une seule fois)
+        setTimeout(function () { notes.classList.remove('fall'); }, 900);
+      }
+      var steps = slide.querySelector('.pptg-steps');
+      if (steps) {
+        steps.innerHTML = 'Enchaînement : ' + combos.map(function (c, i) {
+          var st = (outcome === 'success' || i < q.step) ? 'ok' : (i === q.step && !outcome ? 'now' : '');
+          return '<span class="' + st + '">' + (i + 1) + '</span>';
+        }).join('<i>→</i>');
+      }
+      slide.querySelector('.pptg-track').classList.toggle('fast', !!revealed && !outcome);
+    }
+
+    function renderHeld() {
+      if (screen !== 'playing') return;
+      ['ctrl', 'shift', 'alt'].forEach(function (m) {
+        var c = slide.querySelector('[data-m="' + m + '"]');
+        if (c) c.classList.toggle('on', !!held[m]);
+      });
+    }
+
+    function showTyped(c) {
+      var t = slide.querySelector('.pptg-typed');
+      if (!t) return;
+      var expected = q.entry.combos[q.step];
+      var ok = sameCombo(c, expected);
+      t.className = 'pptg-typed ' + (ok ? 'ok' : 'ko');
+      t.textContent = comboId(c) + (ok ? ' ✓' : ' ✗');
+    }
+
+    function flash(kind) {
+      slide.classList.remove('flash-ok', 'flash-ko');
+      void slide.offsetWidth;
+      slide.classList.add('flash-' + kind);
+    }
+
+    function popup(big, small) {
+      var p = slide.querySelector('.pptg-pop');
+      if (!p) return;
+      p.innerHTML = '<b>' + esc(big) + '</b><small>' + esc(small) + '</small>';
+      p.classList.remove('show');
+      void p.offsetWidth;
+      p.classList.add('show');
+    }
+
+    // ---------- écran de fin ----------
+    function rank(s) {
+      if (s >= 25000) return 'Légende du Ctrl+S';
+      if (s >= 15000) return 'Virtuose du clavier';
+      if (s >= 8000) return 'Ninja du ruban';
+      if (s >= 3000) return 'Consultant·e prometteur·se';
+      return 'Adepte de la souris';
+    }
+
+    function renderEnd() {
+      var p1 = details.filter(function (d) { return d.result === 'phase1'; }).length;
+      var p2 = details.filter(function (d) { return d.result === 'phase2'; }).length;
+      var rows = details.map(function (d) {
+        var label = d.result === 'phase1' ? '<span class="pptg-badge p1">Phase 1 · de mémoire</span>'
+          : d.result === 'phase2' ? '<span class="pptg-badge p2">Phase 2 · révélé</span>'
+            : '<span class="pptg-badge ko">Ratée</span>';
+        return '<tr class="lv-' + d.level + '"><td>' + d.index + '</td><td>' + esc(d.action) + '</td><td class="sc">' + esc(d.shortcut) +
+          '</td><td>' + label + '</td><td class="pts">' + fmt(d.points) + (d.combo > 1 ? ' <small>' + fmtCoef(d.combo) + '</small>' : '') + '</td></tr>';
+      }).join('');
+      var extra = (opts.endActions || []).map(function (a, i) {
+        return '<button class="pptg-btn ' + (a.primary ? '' : 'ghost') + '" data-x="' + i + '">' + esc(a.label) + '</button>';
+      }).join('');
+      slide.className = 'pptg-slide end';
+      slide.innerHTML =
+        '<div class="pptg-end">' +
+        '<div class="pptg-end-head"><div><div class="pptg-kicker">Fin de la présentation</div>' +
+        '<div class="pptg-end-score">' + fmt(score) + ' <small>points</small></div>' +
+        '<div class="pptg-end-rank">' + rank(score) + '</div></div>' +
+        '<div class="pptg-end-sum"><span><b>' + p1 + '</b> de mémoire</span><span><b>' + p2 + '</b> révélés</span><span><b>' + (details.length - p1 - p2) + '</b> ratés</span></div></div>' +
+        '<table class="pptg-recap"><thead><tr><th>#</th><th>Action</th><th>Raccourci</th><th>Résultat</th><th>Points</th></tr></thead><tbody>' + rows + '</tbody></table>' +
+        '<div class="pptg-row"><button class="pptg-btn" data-a="again">↻ Rejouer</button>' + extra + '</div>' +
+        '</div>';
+      bind(slide, 'again', start);
+      slide.querySelectorAll('[data-x]').forEach(function (b) {
+        b.addEventListener('click', function () {
+          var a = opts.endActions[+b.getAttribute('data-x')];
+          if (a && a.onClick) a.onClick({ score: score, details: details.slice() });
+        });
+      });
+    }
+
+    // ---------- test des raccourcis ----------
+    var testCombos = [];
+    function showTest() {
+      stopLoop();
+      screen = 'test';
+      setBlocking(true);
+      var seen = {};
+      testCombos = [];
+      cfg.levelOrder.forEach(function (l) {
+        loaded.pools[l].forEach(function (e) {
+          e.combos.forEach(function (c) {
+            var id = comboId(c);
+            if (!seen[id]) { seen[id] = true; testCombos.push({ id: id, c: c, hit: false }); }
+          });
+        });
+      });
+      slide.className = 'pptg-slide test';
+      slide.innerHTML =
+        '<div class="pptg-test"><h2>🧪 Test des raccourcis</h2>' +
+        '<p>Tape chaque combinaison. Elle passe au vert quand le jeu l\'a reçue et bloquée. ' +
+        'Si le navigateur réagit quand même (nouvel onglet, impression, barre de recherche…), ce raccourci n\'est pas neutralisable ici : retire-le de la banque.</p>' +
+        '<div class="pptg-testgrid">' + testCombos.map(function (t, i) { return '<span class="pptg-tchip" data-t="' + i + '">' + t.id + '</span>'; }).join('') + '</div>' +
+        '<div class="pptg-typed">Dernière touche : –</div>' +
+        '<div class="pptg-row"><button class="pptg-btn ghost" data-a="back">← Retour (Échap)</button></div></div>';
+      bind(slide, 'back', showHome);
+    }
+    function handleTest(c) {
+      var id = comboId(c);
+      var t = slide.querySelector('.pptg-typed');
+      if (t) t.textContent = 'Dernière combinaison reçue et bloquée : ' + id;
+      testCombos.forEach(function (tc, i) {
+        if (sameCombo(tc.c, c)) {
+          tc.hit = true;
+          var chip = slide.querySelector('[data-t="' + i + '"]');
+          if (chip) chip.classList.add('hit');
+        }
+      });
+      sfx('pop');
+    }
+
+    // ======================================================================
+    //  API
+    // ======================================================================
+    function destroy() {
+      destroyed = true;
+      stopLoop();
+      setBlocking(false);
+      exitLockMode();
+      if (ro) ro.disconnect();
+      window.removeEventListener('resize', fit);
+      root.removeEventListener('contextmenu', noContext);
+      if (root.parentNode) root.parentNode.removeChild(root);
+    }
+
+    showHome();
+    return { start: start, destroy: destroy, showHome: showHome };
+  };
+
+  // exposé pour les tests
+  NS._internals = { parseCombo: parseCombo, eventCombo: eventCombo, comboId: comboId, sameCombo: sameCombo };
+})();
+
+</script>
+
+<!-- ===== DÉMARRAGE ===== -->
+<script>
+(function () {
+  PptShortcuts.createGame(document.getElementById('app'), {
+    onGameEnd: function (result) {
+      // Point d'intégration : { score, details: [...] }
+      if (window.console) console.log('[Raccourcis Hero · PowerPoint] onGameEnd', result);
+    }
+  });
+})();
+</script>
+</body>
+</html>
