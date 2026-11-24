@@ -1,0 +1,751 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Feuille de temps Express</title>
+<!-- Fichier généré par tools/build-standalone.js : modifier les sources, puis relancer le script. -->
+<style>
+html, body { margin: 0; height: 100%; background: #f5f6f7; overflow: hidden; overscroll-behavior: none; }
+#app { position: fixed; inset: 0; }
+/* ===== Feuille de temps Express — toutes les classes sont préfixées tsg- ===== */
+.tsg {
+  --tsg-blue: #0a6ed1; --tsg-blue-d: #0854a0; --tsg-ink: #32363a; --tsg-mute: #6a6d70; --tsg-line: #e5e5e5; --tsg-bg: #f5f6f7;
+  --tsg-good: #107e3e; --tsg-perfect: #0a8f6a; --tsg-ok: #2b7d2b; --tsg-meh: #e9730c; --tsg-bad: #bb0000; --tsg-timeout: #6a6d70;
+  position: relative; width: 100%; height: 100%; display: flex; flex-direction: column; overflow: hidden;
+  background: var(--tsg-bg); color: var(--tsg-ink); container-type: inline-size;
+  font-family: '72', 'Segoe UI', system-ui, -apple-system, Roboto, Arial, sans-serif;
+  -webkit-user-select: none; user-select: none; -webkit-tap-highlight-color: transparent;
+}
+.tsg, .tsg *, .tsg *::before, .tsg *::after { box-sizing: border-box; }
+.tsg button { font-family: inherit; }
+
+/* barre d'application */
+.tsg-bar { flex: none; height: 56px; display: flex; align-items: center; justify-content: space-between; padding: 0 18px; background: #354a5f; color: #fff; }
+.tsg-brand { display: flex; align-items: center; gap: 10px; min-width: 0; }
+.tsg-logo { width: 32px; height: 32px; border-radius: 8px; background: var(--tsg-blue); display: flex; align-items: center; justify-content: center; font-size: 18px; }
+.tsg-brand b { font-size: 18px; white-space: nowrap; }
+.tsg-crumb { font-size: 13px; color: #c3cdd7; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.tsg-hud { display: flex; align-items: center; gap: 18px; }
+.tsg-hud > div { display: flex; flex-direction: column; align-items: flex-end; line-height: 1.05; }
+.tsg-hud small { font-size: 11px; text-transform: uppercase; letter-spacing: 1px; color: #c3cdd7; }
+.tsg-hud b { font-size: 24px; font-variant-numeric: tabular-nums; }
+.tsg-hud b.bump { animation: tsgBump .45s; }
+@keyframes tsgBump { 40% { transform: scale(1.3); color: #ffd666; } }
+.tsg-avatar { width: 34px; height: 34px; border-radius: 50%; background: #fff; color: #354a5f; font-weight: 700; font-size: 13px; display: flex; align-items: center; justify-content: center; }
+
+/* corps */
+.tsg-body { flex: 1; min-height: 0; display: flex; gap: 18px; padding: 18px; }
+.tsg-sheet { flex: none; width: 420px; background: #fff; border-radius: 12px; border: 1px solid var(--tsg-line); padding: 14px; display: flex; flex-direction: column; gap: 10px; box-shadow: 0 1px 3px rgba(0, 0, 0, .06); }
+.tsg-sheet-head { display: flex; justify-content: space-between; align-items: baseline; font-size: 13px; color: var(--tsg-mute); }
+.tsg-sheet-head b { font-size: 17px; color: var(--tsg-ink); }
+.tsg-sheet-head i { font-style: normal; font-weight: 700; color: var(--tsg-blue); }
+.tsg-grid { display: grid; grid-template-columns: 34px repeat(5, 1fr); gap: 5px; }
+.tsg-gh { font-size: 12px; font-weight: 700; color: var(--tsg-mute); text-align: center; text-transform: uppercase; }
+.tsg-gw { font-size: 12px; font-weight: 700; color: var(--tsg-mute); display: flex; align-items: center; }
+.tsg-cell {
+  position: relative; height: 118px; border-radius: 8px; border: 1px dashed #cfd3d6; background: #fafbfc;
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1px; overflow: hidden; padding: 4px;
+}
+.tsg-cell b { font-size: 18px; font-variant-numeric: tabular-nums; }
+.tsg-cell small { font-size: 11px; color: var(--tsg-mute); }
+.tsg-cell em { font-style: normal; font-size: 9.5px; font-weight: 800; letter-spacing: .5px; border: 2px solid currentColor; border-radius: 4px; padding: 0 4px; transform: rotate(-8deg); margin-top: 3px; }
+.tsg-cproj { position: absolute; left: 3px; right: 3px; bottom: 3px; font-style: normal; font-size: 9px; color: #9ba1a6; text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.tsg-cell.current { border: 2px solid var(--tsg-blue); background: #ebf5fe; animation: tsgCur 1.2s ease-in-out infinite alternate; }
+@keyframes tsgCur { to { box-shadow: 0 0 0 4px rgba(10, 110, 209, .18); } }
+.tsg-cell[class*="tone-"] { border-style: solid; }
+.tsg-cell.tone-perfect { background: #e2f6ef; border-color: var(--tsg-perfect); color: var(--tsg-perfect); }
+.tsg-cell.tone-good, .tsg-cell.tone-ok { background: #ebf5eb; border-color: var(--tsg-good); color: var(--tsg-good); }
+.tsg-cell.tone-meh { background: #fef3e6; border-color: var(--tsg-meh); color: var(--tsg-meh); }
+.tsg-cell.tone-bad { background: #ffebeb; border-color: var(--tsg-bad); color: var(--tsg-bad); }
+.tsg-cell.tone-timeout { background: #eff1f2; border-color: var(--tsg-timeout); color: var(--tsg-timeout); }
+.tsg-totals { margin-top: auto; display: flex; justify-content: space-between; font-size: 13px; color: var(--tsg-mute); border-top: 1px solid var(--tsg-line); padding-top: 10px; }
+.tsg-totals b { color: var(--tsg-ink); font-size: 16px; margin-left: 4px; font-variant-numeric: tabular-nums; }
+
+.tsg-main { flex: 1; min-width: 0; min-height: 0; display: flex; }
+.tsg-card { position: relative; flex: 1; min-width: 0; background: #fff; border-radius: 12px; border: 1px solid var(--tsg-line); box-shadow: 0 1px 3px rgba(0, 0, 0, .06); padding: 22px 28px; display: flex; flex-direction: column; align-items: center; overflow: hidden; }
+
+/* accueil */
+.tsg-home { justify-content: center; text-align: center; background: linear-gradient(160deg, #fff 55%, #ebf5fe); }
+.tsg-kicker { display: inline-block; background: var(--tsg-blue); color: #fff; font-weight: 700; font-size: 13px; letter-spacing: .5px; padding: 4px 14px; border-radius: 20px; }
+.tsg-home h1 { font-size: 54px; line-height: 1.05; margin: 12px 0 14px; color: #1d2d3e; }
+.tsg-home h1 span { color: var(--tsg-blue); }
+.tsg-rules { text-align: left; font-size: 19px; line-height: 1.55; margin: 0 auto 18px; padding-left: 26px; max-width: 620px; }
+.tsg-row { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; margin-top: 10px; }
+.tsg-btn { border: 0; border-radius: 8px; padding: 12px 26px; font-size: 18px; font-weight: 700; color: #fff; background: var(--tsg-blue); cursor: pointer; box-shadow: 0 3px 0 var(--tsg-blue-d); touch-action: manipulation; }
+.tsg-btn:hover { filter: brightness(1.08); }
+.tsg-btn.big { font-size: 24px; padding: 14px 52px; }
+.tsg-btn.ghost { background: #fff; color: var(--tsg-blue); border: 2px solid var(--tsg-blue); box-shadow: none; }
+.tsg-btn[disabled] { opacity: .5; cursor: not-allowed; }
+.tsg-alert { background: #ffebeb; color: var(--tsg-bad); border-radius: 8px; padding: 8px 14px; margin: 6px auto; max-width: 600px; }
+
+/* manche */
+.tsg-round { gap: 6px; }
+.tsg-meta { width: 100%; display: flex; gap: 10px; align-items: center; flex-wrap: wrap; font-size: 13px; color: var(--tsg-mute); }
+.tsg-level { color: #fff; font-weight: 700; padding: 3px 12px; border-radius: 20px; background: var(--tsg-good); }
+.lv-intermediaire .tsg-level { background: var(--tsg-meh); }
+.lv-difficile .tsg-level { background: var(--tsg-bad); }
+.tsg-mode { background: #eff1f2; border-radius: 20px; padding: 3px 10px; font-weight: 600; }
+.tsg-day { margin-left: auto; font-weight: 600; }
+.tsg-order { text-align: center; font-size: 30px; line-height: 1.25; margin: 8px 0 2px; }
+.tsg-order b { color: var(--tsg-blue); font-size: 40px; }
+.tsg-proj { font-weight: 700; }
+.tsg-order code { font-size: 13px; background: #eff1f2; border-radius: 4px; padding: 2px 6px; color: var(--tsg-mute); vertical-align: middle; }
+.tsg-clockwrap { position: relative; display: flex; flex-direction: column; align-items: center; margin: 4px 0; }
+.tsg-clock {
+  font-family: 'Consolas', 'SF Mono', 'Roboto Mono', 'Courier New', monospace; font-size: 116px; font-weight: 700; line-height: 1;
+  padding: 10px 34px; border-radius: 16px; background: #1d2d3e; color: #7ee0ff; letter-spacing: 4px; font-variant-numeric: tabular-nums;
+  text-shadow: 0 0 18px rgba(126, 224, 255, .55); box-shadow: inset 0 0 0 4px #0e1a27, 0 6px 18px rgba(0, 0, 0, .18);
+}
+.tsg-clock.masked { color: #6a7f94; text-shadow: none; }
+.tsg-round.running .tsg-clock:not(.masked) { color: #a6ff9e; text-shadow: 0 0 18px rgba(120, 255, 110, .5); }
+.tsg-target { font-size: 14px; color: var(--tsg-mute); margin-top: 6px; }
+.tsg-target b { color: var(--tsg-ink); }
+.tsg-stamp {
+  position: absolute; right: -150px; top: 4px; font-size: 28px; white-space: nowrap; font-weight: 900; letter-spacing: 2px; padding: 4px 16px;
+  border: 5px solid currentColor; border-radius: 10px; transform: rotate(-12deg); opacity: 0; pointer-events: none; background: rgba(255, 255, 255, .85);
+}
+.tsg-stamp.show { animation: tsgStamp .45s cubic-bezier(.3, 1.6, .5, 1) forwards; }
+@keyframes tsgStamp { from { opacity: 0; transform: rotate(-30deg) scale(2.4); } to { opacity: 1; transform: rotate(-12deg) scale(1); } }
+.tone-perfect.tsg-stamp, .tsg-mini-stamp.tone-perfect { color: var(--tsg-perfect); }
+.tone-good.tsg-stamp, .tone-ok.tsg-stamp, .tsg-mini-stamp.tone-good, .tsg-mini-stamp.tone-ok { color: var(--tsg-good); }
+.tone-meh.tsg-stamp, .tsg-mini-stamp.tone-meh { color: var(--tsg-meh); }
+.tone-bad.tsg-stamp, .tsg-mini-stamp.tone-bad { color: var(--tsg-bad); }
+.tone-timeout.tsg-stamp, .tsg-mini-stamp.tone-timeout { color: var(--tsg-timeout); }
+
+.tsg-result { min-height: 0; text-align: center; }
+.tsg-res-tier { font-size: 21px; font-weight: 800; margin-bottom: 6px; }
+.tsg-round.tone-perfect .tsg-res-tier { color: var(--tsg-perfect); }
+.tsg-round.tone-good .tsg-res-tier, .tsg-round.tone-ok .tsg-res-tier { color: var(--tsg-good); }
+.tsg-round.tone-meh .tsg-res-tier { color: var(--tsg-meh); }
+.tsg-round.tone-bad .tsg-res-tier { color: var(--tsg-bad); }
+.tsg-round.tone-timeout .tsg-res-tier { color: var(--tsg-timeout); }
+.tsg-res-grid { display: grid; grid-template-columns: auto auto; gap: 2px 14px; justify-content: center; text-align: left; font-size: 16px; }
+.tsg-res-grid span { color: var(--tsg-mute); }
+.tsg-res-grid small { color: var(--tsg-mute); font-weight: 400; }
+.tsg-res-grid .pts { color: var(--tsg-blue); font-size: 18px; }
+
+.tsg-go {
+  margin-top: auto; width: min(420px, 100%); height: 84px; border: 0; border-radius: 16px; cursor: pointer;
+  font-size: 32px; font-weight: 800; color: #fff; background: linear-gradient(#2a8cf0, var(--tsg-blue)); box-shadow: 0 6px 0 var(--tsg-blue-d), 0 10px 20px rgba(10, 110, 209, .3);
+  touch-action: manipulation; -webkit-user-select: none; user-select: none; transition: transform .05s, box-shadow .05s;
+}
+.tsg-go:active { transform: translateY(4px); box-shadow: 0 2px 0 var(--tsg-blue-d); }
+.tsg-go.running { background: linear-gradient(#ff8a3d, #e9730c); box-shadow: 0 6px 0 #a64f06, 0 10px 20px rgba(233, 115, 12, .35); animation: tsgGo .5s ease-in-out infinite alternate; }
+@keyframes tsgGo { to { filter: brightness(1.12); } }
+.tsg-go.next { background: linear-gradient(#4a5b6c, #354a5f); box-shadow: 0 6px 0 #1d2d3e; font-size: 26px; }
+.tsg-go.locked { opacity: .55; }
+.tsg-tip { font-size: 13px; color: var(--tsg-mute); margin-top: 8px; }
+
+/* fin : la feuille de temps récapitulative prend toute la largeur */
+.tsg.ended .tsg-sheet { display: none; }
+.tsg-end { align-items: stretch; padding: 18px 22px; }
+.tsg-end-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+.tsg-end-score { font-size: 48px; font-weight: 900; color: var(--tsg-blue); line-height: 1.05; margin-top: 4px; }
+.tsg-end-score small { font-size: 18px; color: var(--tsg-mute); }
+.tsg-end-rank { font-size: 19px; font-weight: 700; }
+.tsg-end-stamp { font-size: 34px; font-weight: 900; color: var(--tsg-good); border: 5px solid currentColor; border-radius: 10px; padding: 2px 16px; transform: rotate(-10deg); animation: tsgStamp .5s .2s cubic-bezier(.3, 1.6, .5, 1) both; }
+.tsg-tablewrap { flex: 1; min-height: 0; overflow: auto; }
+.tsg-recap { width: 100%; border-collapse: collapse; font-size: 13.5px; }
+.tsg-recap th { position: sticky; top: 0; background: #eff1f2; text-align: left; font-size: 11px; text-transform: uppercase; letter-spacing: .8px; color: var(--tsg-mute); padding: 6px; }
+.tsg-recap td { padding: 5px 6px; border-bottom: 1px solid var(--tsg-line); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.tsg-recap td.proj { white-space: normal; font-weight: 600; }
+.tsg-recap td.gap small { display: block; color: var(--tsg-mute); font-size: 11px; }
+.tsg-recap td.pts { font-weight: 800; text-align: right; }
+.tsg-mini-stamp { font-size: 10.5px; font-weight: 800; border: 2px solid currentColor; border-radius: 4px; padding: 0 5px; display: inline-block; transform: rotate(-6deg); }
+
+/* ===== mobile / conteneur étroit ===== */
+@container (max-width: 900px) {
+  .tsg-body { flex-direction: column; padding: 10px; gap: 10px; overflow-y: auto; }
+  .tsg-main { flex: none; }
+  .tsg-card { overflow: visible; }
+  .tsg-sheet { width: auto; padding: 8px 10px; gap: 6px; }
+  .tsg-grid { grid-template-columns: 26px repeat(5, 1fr); gap: 3px; }
+  .tsg-cell { height: 40px; flex-direction: row; gap: 3px; }
+  .tsg-cell b { font-size: 12px; }
+  .tsg-cell small, .tsg-cell em, .tsg-cproj { display: none; }
+  .tsg-totals { padding-top: 4px; }
+  .tsg-crumb { display: none; }
+  .tsg-card { padding: 14px; }
+  .tsg-order { font-size: 21px; }
+  .tsg-order b { font-size: 28px; }
+  .tsg-clock { font-size: 70px; padding: 8px 18px; }
+  .tsg-stamp { right: -10px; top: -14px; font-size: 22px; }
+  .tsg-home h1 { font-size: 38px; }
+  .tsg-rules { font-size: 16px; }
+  .tsg-go { height: 72px; font-size: 26px; }
+  .tsg-day { margin-left: 0; }
+  .tsg-end-score { font-size: 36px; }
+  .tsg-end-stamp { font-size: 22px; }
+}
+@container (max-width: 480px) {
+  .tsg-hud { gap: 10px; }
+  .tsg-hud b { font-size: 18px; }
+  .tsg-avatar { display: none; }
+  .tsg-brand b { font-size: 15px; }
+  .tsg-clock { font-size: 56px; }
+}
+
+</style>
+</head>
+<body>
+<div id="app"></div>
+
+<!-- ===== CONFIGURATION (modifiable sans toucher au jeu) ===== -->
+<script>
+/*
+ * ============================================================================
+ *  CONFIGURATION · Feuille de temps Express
+ *  Modifiable sans toucher à la logique du jeu (timesheet-game.js).
+ * ============================================================================
+ *  - projects : les projets tirés au hasard (un par manche, sans répétition tant que possible)
+ *  - levels   : plages de valeurs cibles et mode d'affichage du chronomètre par niveau
+ *  - tiers    : paliers de précision (écart en millisecondes réelles) et tampon affiché
+ */
+(function () {
+  'use strict';
+  var NS = (window.TimesheetGame = window.TimesheetGame || {});
+
+  NS.config = {
+    // 1 heure imputée = 1 seconde réelle
+    msPerHour: 1000,
+
+    // Arrêt automatique si rien n'est fait N ms après la cible (0 point)
+    autoStopAfterMs: 3000,
+
+    // Après un arrêt, toute saisie est ignorée pendant N ms (anti double-clic)
+    inputLockMs: 500,
+
+    // Déroulé : 3 faciles, 4 intermédiaires, 3 difficiles (dans cet ordre)
+    levelOrder: ['facile', 'intermediaire', 'difficile'],
+    levels: {
+      facile: {
+        label: 'Facile', coef: 1, rounds: 3,
+        minMinutes: 120, maxMinutes: 300, stepMinutes: 60,         // 2 h à 5 h, heures pleines
+        display: 'visible', hint: 'Chrono visible'
+      },
+      intermediaire: {
+        label: 'Intermédiaire', coef: 1.5, rounds: 4,
+        minMinutes: 180, maxMinutes: 480, stepMinutes: 15,         // 3 h à 8 h, demi-heures et quarts d'heure
+        excludeWholeHours: true,
+        display: 'hideAfter', hideAfterMs: 2000, hint: 'Chrono masqué après 2 s'
+      },
+      difficile: {
+        label: 'Difficile', coef: 2, rounds: 3,
+        minMinutes: 300, maxMinutes: 600, stepMinutes: 1,          // 5 h à 10 h, à la minute près
+        excludeQuarterHours: true,                                  // pas de :00, :15, :30, :45
+        display: 'hidden', hint: 'Chrono masqué dès le départ'
+      }
+    },
+
+    // Points = 1000 × max(0, 1 − écart / 1000), arrondi ; puis × coefficient du niveau
+    scoring: { maxPoints: 1000, zeroAtMs: 1000 },
+
+    // Paliers de précision (du plus précis au moins précis)
+    tiers: [
+      { maxMs: 20, label: 'Parfait – validé sans relecture', bonus: 250, stamp: 'VALIDÉ', tone: 'perfect' },
+      { maxMs: 100, label: 'Excellent', bonus: 0, stamp: 'VALIDÉ', tone: 'good' },
+      { maxMs: 250, label: 'Correct', bonus: 0, stamp: 'VALIDÉ', tone: 'ok' },
+      { maxMs: 500, label: 'Approximatif – le manager fronce les sourcils', bonus: 0, stamp: 'À REVOIR', tone: 'meh' },
+      { maxMs: Infinity, label: 'Refusé par le contrôle de gestion', bonus: 0, stamp: 'REFUSÉ', tone: 'bad' }
+    ],
+    timeoutLabel: 'Feuille de temps non soumise',
+    timeoutStamp: 'NON SOUMIS',
+
+    // Projets (name : affiché ; code : code d'imputation, facultatif)
+    projects: [
+      { name: 'Projet Alpha – Cadrage IA', code: 'PRJ-ALPHA-001' },
+      { name: 'Avant-vente Banque', code: 'AV-BQ-2026' },
+      { name: 'Interne – Formation', code: 'INT-FORM' },
+      { name: 'Refonte SI RH', code: 'SIRH-042' },
+      { name: 'Inter-contrat', code: 'IC-000' },
+      { name: 'Réunion qui aurait pu être un mail', code: 'MTG-∞' },
+      { name: 'Comité de pilotage du comité de pilotage', code: 'COPIL²' },
+      { name: 'Migration Cloud (phase 7 sur 3)', code: 'CLD-007' },
+      { name: 'Benchmark des benchmarks', code: 'BMK-META' },
+      { name: 'Atelier post-it – Transformation', code: 'TRF-PST' },
+      { name: 'Mission Assurance – Run', code: 'ASS-RUN' },
+      { name: 'Déjeuner « networking »', code: 'NET-LUNCH' }
+    ]
+  };
+})();
+
+</script>
+
+<!-- ===== MOTEUR DU JEU ===== -->
+<script>
+/*
+ * ============================================================================
+ *  FEUILLE DE TEMPS EXPRESS · mini-jeu de chronométrage (module autonome)
+ * ============================================================================
+ *  Interface publique (seul nom exposé : window.TimesheetGame) :
+ *
+ *    var game = TimesheetGame.createGame(container, {
+ *      config:     TimesheetGame.config,         // optionnel
+ *      onGameEnd:  function ({ score, details }) {},
+ *      sfx:        function (name) {},           // optionnel : sons fournis par l'hôte
+ *      onQuit:     function () {},               // optionnel : bouton « Quitter » sur l'accueil
+ *      endActions: [{ label, primary, onClick }] // optionnel : boutons en plus sur l'écran de fin
+ *    });
+ *    game.start();    // lance directement une partie (sinon l'accueil propose « Jouer »)
+ *    game.destroy();  // retire tout (DOM, écouteurs, minuteries)
+ *
+ *  PRÉCISION DU CHRONOMÉTRAGE
+ *  - Les instants de départ et d'arrêt sont relevés avec performance.now() en PREMIÈRE ligne
+ *    du gestionnaire d'événement (pointerdown / keydown), jamais dans la boucle d'affichage.
+ *  - Le score est calculé uniquement à partir de ces deux horodatages.
+ *  - requestAnimationFrame ne sert qu'à rafraîchir l'affichage du chronomètre.
+ */
+(function () {
+  'use strict';
+  var NS = (window.TimesheetGame = window.TimesheetGame || {});
+
+  var DAYS = ['Lun', 'Mar', 'Mer', 'Jeu', 'Ven'];
+  var START_GUARD_MS = 300; // un double-clic sur « Start » ne doit pas arrêter le chrono aussitôt
+
+  // ---------- utilitaires ----------
+  function el(tag, cls, html) { var e = document.createElement(tag); if (cls) e.className = cls; if (html != null) e.innerHTML = html; return e; }
+  function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
+  function shuffle(a) { a = a.slice(); for (var i = a.length - 1; i > 0; i--) { var j = Math.floor(Math.random() * (i + 1)); var t = a[i]; a[i] = a[j]; a[j] = t; } return a; }
+  function pad(n) { return (n < 10 ? '0' : '') + n; }
+  function fmtHM(min) { min = Math.max(0, Math.round(min)); return pad(Math.floor(min / 60)) + ':' + pad(min % 60); }
+  function fmtHuman(min) { return Math.floor(min / 60) + ' h ' + pad(min % 60); }
+  function fmtPts(n) { return Math.round(n).toLocaleString('fr-FR'); }
+  function fmtCoef(x) { return '×' + String(x).replace('.', ','); }
+  function plural(n, w) { return n + ' ' + w + (n > 1 ? 's' : ''); }
+
+  /** Texte d'écart en minutes imputées, ton humoristique. */
+  function diffText(diffMin) {
+    if (diffMin > 0) return plural(diffMin, 'minute') + ' imputée' + (diffMin > 1 ? 's' : '') + ' en trop';
+    if (diffMin < 0) return plural(-diffMin, 'minute') + ' oubliée' + (-diffMin > 1 ? 's' : '');
+    return 'Pile à la minute près';
+  }
+
+  // sons de secours
+  var ac = null;
+  function beep(f, d, type, vol, delay) {
+    try {
+      var C = window.AudioContext || window.webkitAudioContext; if (!C) return;
+      ac = ac || new C(); if (ac.state === 'suspended') ac.resume();
+      var t = ac.currentTime + (delay || 0), o = ac.createOscillator(), g = ac.createGain();
+      o.type = type || 'sine'; o.frequency.setValueAtTime(f, t);
+      g.gain.setValueAtTime(vol || 0.08, t); g.gain.exponentialRampToValueAtTime(0.0001, t + d);
+      o.connect(g); g.connect(ac.destination); o.start(t); o.stop(t + d + 0.05);
+    } catch (e) { /* pas de son */ }
+  }
+  var DEFAULT_SFX = {
+    pop: function () { beep(600, 0.08, 'triangle'); },
+    ding: function () { beep(880, 0.2); beep(1320, 0.3, 'sine', 0.06, 0.1); },
+    error: function () { beep(200, 0.25, 'square', 0.05); },
+    alarm: function () { beep(520, 0.12, 'square', 0.04); beep(400, 0.18, 'square', 0.04, 0.14); },
+    win: function () { [523, 659, 784, 1046].forEach(function (f, i) { beep(f, 0.3, 'triangle', 0.08, i * 0.12); }); }
+  };
+
+  // ======================================================================
+  //  Tirage des valeurs cibles
+  // ======================================================================
+  function candidates(lvl) {
+    var out = [];
+    for (var m = lvl.minMinutes; m <= lvl.maxMinutes; m += (lvl.stepMinutes || 1)) {
+      if (lvl.excludeWholeHours && m % 60 === 0) continue;
+      if (lvl.excludeQuarterHours && m % 15 === 0) continue;
+      out.push(m);
+    }
+    return out;
+  }
+
+  NS.checkConfig = function (cfg) {
+    var errors = [];
+    if (!cfg || !cfg.levels || !Array.isArray(cfg.levelOrder)) return ['Configuration invalide (levels / levelOrder).'];
+    cfg.levelOrder.forEach(function (k) {
+      var l = cfg.levels[k];
+      if (!l) { errors.push('Niveau « ' + k + ' » absent.'); return; }
+      if (candidates(l).length < l.rounds) errors.push('Niveau « ' + k + ' » : pas assez de valeurs possibles pour ' + l.rounds + ' manches.');
+    });
+    if (!Array.isArray(cfg.projects) || !cfg.projects.length) errors.push('Aucun projet dans la configuration.');
+    return errors;
+  };
+
+  // ======================================================================
+  //  Le jeu
+  // ======================================================================
+  NS.createGame = function (container, opts) {
+    opts = opts || {};
+    var cfg = opts.config || NS.config;
+    var cfgErrors = NS.checkConfig(cfg);
+    var sfx = typeof opts.sfx === 'function' ? opts.sfx : function (n) { if (DEFAULT_SFX[n]) DEFAULT_SFX[n](); };
+    var TOTAL = cfg.levelOrder.reduce(function (n, k) { return n + cfg.levels[k].rounds; }, 0);
+
+    var root = el('div', 'tsg');
+    root.innerHTML =
+      '<header class="tsg-bar">' +
+      '<div class="tsg-brand"><span class="tsg-logo">⏱</span><b>TimeTrack Pro</b><span class="tsg-crumb">Mes temps › Saisie › Semaines 47–48</span></div>' +
+      '<div class="tsg-hud"><div><small>Score</small><b data-h="score">0</b></div><div><small>Manche</small><b data-h="round">–/' + TOTAL + '</b></div>' +
+      '<span class="tsg-avatar">JC</span></div>' +
+      '</header>' +
+      '<div class="tsg-body">' +
+      '<aside class="tsg-sheet"><div class="tsg-sheet-head"><b>Feuille de temps</b><span>Statut : <i data-h="status">Brouillon</i></span></div><div class="tsg-grid"></div>' +
+      '<div class="tsg-totals"><span>Demandé <b data-h="tdem">00:00</b></span><span>Imputé <b data-h="timp">00:00</b></span></div></aside>' +
+      '<main class="tsg-main"></main>' +
+      '</div>';
+    container.appendChild(root);
+
+    var main = root.querySelector('.tsg-main');
+    var grid = root.querySelector('.tsg-grid');
+    var hud = {};
+    root.querySelectorAll('[data-h]').forEach(function (e) { hud[e.getAttribute('data-h')] = e; });
+
+    // ---------- état ----------
+    var screen = 'home';
+    var rounds = [], ri = -1, r = null;
+    var phase = 'idle';        // ready | running | result
+    var lockUntil = 0;         // anti double-clic (performance.now())
+    var raf = 0, autoTimer = 0, destroyed = false, keysOn = false;
+    var score = 0, details = [];
+    var ui = {};
+
+    // ======================================================================
+    //  Entrées : pointerdown sur le gros bouton, barre d'espace au clavier
+    // ======================================================================
+    function onMainPointerDown(e) {
+      var t = performance.now(); // horodatage relevé immédiatement
+      if (e.pointerType === 'mouse' && e.button !== 0) return;
+      e.preventDefault();
+      act(t);
+    }
+    function onKeyDown(e) {
+      var isSpace = e.code === 'Space' || e.key === ' ' || e.key === 'Spacebar';
+      if (!isSpace && e.key !== 'Enter') return;
+      var t = performance.now(); // horodatage relevé immédiatement
+      e.preventDefault();        // pas de défilement, pas d'activation du bouton focalisé
+      e.stopPropagation();
+      if (e.repeat) return;      // répétition automatique ignorée
+      act(t);
+    }
+    function onKeyUp(e) {
+      if (e.code === 'Space' || e.key === ' ' || e.key === 'Enter') { e.preventDefault(); e.stopPropagation(); }
+    }
+    function setKeys(on) {
+      if (on === keysOn) return;
+      keysOn = on;
+      var fn = on ? 'addEventListener' : 'removeEventListener';
+      window[fn]('keydown', onKeyDown, { capture: true });
+      window[fn]('keyup', onKeyUp, { capture: true });
+    }
+
+    function act(t) {
+      if (screen !== 'round' || t < lockUntil) return;
+      if (phase === 'ready') startTimer(t);
+      else if (phase === 'running') { if (t - r.t0 >= START_GUARD_MS) stopTimer(t, false); }
+      else if (phase === 'result') nextRound();
+    }
+
+    // ======================================================================
+    //  Accueil
+    // ======================================================================
+    function showHome() {
+      stopLoop();
+      setKeys(false);
+      screen = 'home';
+      score = 0; details = []; rounds = []; ri = -1;
+      root.classList.remove('ended');
+      renderGrid(); renderHud();
+      main.innerHTML =
+        '<div class="tsg-card tsg-home">' +
+        '<div class="tsg-kicker">Le jeu du contrôle de gestion</div>' +
+        '<h1>Feuille de temps <span>Express</span></h1>' +
+        '<ol class="tsg-rules">' +
+        '<li><b>1 heure imputée = 1 seconde réelle.</b> 30 minutes = 0,5 s.</li>' +
+        '<li>Clique sur <b>Start</b>, puis sur <b>Imputer</b> (ou barre d\'espace) pile au bon moment.</li>' +
+        '<li>10 manches, de plus en plus dures : le chronomètre finit par <b>disparaître</b>.</li>' +
+        '</ol>' +
+        (cfgErrors.length ? '<div class="tsg-alert">⚠ ' + cfgErrors.map(esc).join('<br>') + '</div>' : '') +
+        '<div class="tsg-row"><button class="tsg-btn big" data-a="play"' + (cfgErrors.length ? ' disabled' : '') + '>Jouer</button>' +
+        (opts.onQuit ? '<button class="tsg-btn ghost" data-a="quit">Quitter</button>' : '') + '</div>' +
+        '</div>';
+      bind('play', start);
+      bind('quit', function () { if (opts.onQuit) opts.onQuit(); });
+    }
+
+    function bind(action, fn) {
+      var b = main.querySelector('[data-a="' + action + '"]');
+      if (b) b.addEventListener('click', function (e) { e.preventDefault(); b.blur(); fn(); });
+    }
+
+    // ======================================================================
+    //  Partie
+    // ======================================================================
+    function buildRounds() {
+      var projects = [], list = [];
+      cfg.levelOrder.forEach(function (k) {
+        var lvl = cfg.levels[k];
+        shuffle(candidates(lvl)).slice(0, lvl.rounds).forEach(function (m) {
+          if (!projects.length) projects = shuffle(cfg.projects);
+          var p = projects.pop();
+          list.push({
+            level: k, lvl: lvl, targetMin: m, targetMs: m / 60 * cfg.msPerHour,
+            project: typeof p === 'string' ? { name: p } : p
+          });
+        });
+      });
+      return list;
+    }
+
+    function start() {
+      if (destroyed || cfgErrors.length) return;
+      stopLoop();
+      rounds = buildRounds();
+      ri = -1; score = 0; details = [];
+      root.classList.remove('ended');
+      screen = 'round';
+      setKeys(true);
+      if (document.activeElement && document.activeElement.blur) document.activeElement.blur();
+      nextRound();
+    }
+
+    function nextRound() {
+      ri++;
+      if (ri >= rounds.length) { endGame(); return; }
+      r = rounds[ri];
+      phase = 'ready';
+      renderRound();
+      renderGrid();
+      renderHud();
+    }
+
+    function startTimer(t) {
+      r.t0 = t;
+      phase = 'running';
+      sfx('pop');
+      ui.btn.textContent = 'Imputer';
+      ui.btn.classList.add('running');
+      ui.card.classList.add('running');
+      ui.tip.textContent = 'Arrête-toi pile sur ' + fmtHM(r.targetMin) + ' · barre d\'espace ou clic';
+      var limit = r.targetMs + cfg.autoStopAfterMs;
+      clearTimeout(autoTimer);
+      autoTimer = setTimeout(function () { checkAutoStop(); }, limit + 20);
+      raf = requestAnimationFrame(loop);
+    }
+
+    function checkAutoStop() {
+      if (phase !== 'running') return;
+      var limit = r.targetMs + cfg.autoStopAfterMs;
+      if (performance.now() - r.t0 >= limit) stopTimer(r.t0 + limit, true);
+    }
+
+    // boucle d'affichage : uniquement pour l'œil
+    function loop() {
+      if (destroyed || phase !== 'running') return;
+      var elapsed = performance.now() - r.t0;
+      ui.clock.textContent = clockText(elapsed);
+      ui.clock.classList.toggle('masked', isMasked(elapsed));
+      checkAutoStop();
+      if (phase === 'running') raf = requestAnimationFrame(loop);
+    }
+    function stopLoop() { cancelAnimationFrame(raf); raf = 0; clearTimeout(autoTimer); }
+
+    function isMasked(elapsed) {
+      var d = r.lvl.display;
+      return d === 'hidden' || (d === 'hideAfter' && elapsed >= (r.lvl.hideAfterMs || 2000));
+    }
+    function clockText(elapsed) {
+      if (isMasked(elapsed)) return '??:??';
+      return fmtHM(Math.floor(elapsed * 60 / cfg.msPerHour));
+    }
+
+    function stopTimer(t, timeout) {
+      stopLoop();
+      phase = 'result';
+      lockUntil = t + cfg.inputLockMs;
+      var elapsed = t - r.t0;
+      var errMs = Math.abs(elapsed - r.targetMs);
+      var imputedMin = Math.round(elapsed * 60 / cfg.msPerHour);
+      var diffMin = Math.round((elapsed - r.targetMs) * 60 / cfg.msPerHour);
+      var tier, base = 0, pts = 0;
+      if (timeout) {
+        tier = { label: cfg.timeoutLabel, stamp: cfg.timeoutStamp, tone: 'timeout', bonus: 0 };
+      } else {
+        tier = cfg.tiers.filter(function (x) { return errMs <= x.maxMs; })[0] || cfg.tiers[cfg.tiers.length - 1];
+        base = Math.round(cfg.scoring.maxPoints * Math.max(0, 1 - errMs / cfg.scoring.zeroAtMs));
+        pts = Math.round((base + (tier.bonus || 0)) * r.lvl.coef);
+      }
+      score += pts;
+      var d = {
+        index: ri + 1, day: dayLabel(ri), project: r.project.name, level: r.level,
+        targetMin: r.targetMin, target: fmtHM(r.targetMin),
+        imputedMs: Math.round(elapsed), imputed: timeout ? '—' : fmtHM(imputedMin),
+        errorMs: timeout ? null : Math.round(errMs), diffMin: timeout ? null : diffMin,
+        diffText: timeout ? cfg.timeoutLabel : diffText(diffMin),
+        tier: tier.label, tone: tier.tone, stamp: tier.stamp, points: pts, timeout: !!timeout
+      };
+      details.push(d);
+      renderResult(d, elapsed);
+      renderGrid();
+      renderHud(true);
+      sfx(timeout ? 'alarm' : tier.tone === 'bad' || tier.tone === 'meh' ? 'error' : 'ding');
+    }
+
+    function endGame() {
+      stopLoop();
+      setKeys(false);
+      screen = 'end';
+      phase = 'idle';
+      root.classList.add('ended');
+      renderGrid(); renderHud();
+      renderEnd();
+      sfx('win');
+      if (typeof opts.onGameEnd === 'function') {
+        try { opts.onGameEnd({ score: score, details: details.slice() }); } catch (e) { if (window.console) console.error(e); }
+      }
+    }
+
+    // ======================================================================
+    //  Rendu
+    // ======================================================================
+    function dayLabel(i) { return DAYS[i % 5] + ' S' + (47 + Math.floor(i / 5)); }
+
+    function renderHud(bump) {
+      hud.score.textContent = fmtPts(score);
+      hud.round.textContent = (screen === 'round' ? ri + 1 : screen === 'end' ? TOTAL : '–') + '/' + TOTAL;
+      hud.status.textContent = screen === 'end' ? 'Soumise' : screen === 'round' ? 'En cours de saisie' : 'Brouillon';
+      var dem = details.reduce(function (n, d) { return n + d.targetMin; }, 0);
+      var imp = details.reduce(function (n, d) { return n + (d.timeout ? 0 : Math.round(d.imputedMs * 60 / cfg.msPerHour)); }, 0);
+      hud.tdem.textContent = fmtHM(dem);
+      hud.timp.textContent = fmtHM(imp);
+      if (bump) { hud.score.classList.remove('bump'); void hud.score.offsetWidth; hud.score.classList.add('bump'); }
+    }
+
+    function renderGrid() {
+      var html = '<div class="tsg-gh"></div>' + DAYS.map(function (d) { return '<div class="tsg-gh">' + d + '</div>'; }).join('');
+      for (var w = 0; w < 2; w++) {
+        html += '<div class="tsg-gw">S' + (47 + w) + '</div>';
+        for (var dd = 0; dd < 5; dd++) {
+          var i = w * 5 + dd, d = details[i], rr = rounds[i];
+          var cls = 'tsg-cell';
+          var inner = '';
+          if (d) {
+            cls += ' tone-' + d.tone;
+            inner = '<b>' + (d.timeout ? '—' : d.imputed) + '</b><small>/' + d.target + '</small><em>' + esc(d.stamp) + '</em>';
+          } else if (screen === 'round' && i === ri) {
+            cls += ' current';
+            inner = '<b>' + fmtHM(rr.targetMin) + '</b><small>à saisir</small>';
+          } else {
+            inner = '<small>' + (rr ? '' : '') + '</small>';
+          }
+          if (rr) inner += '<i class="tsg-cproj">' + esc(rr.project.code || rr.project.name) + '</i>';
+          html += '<div class="' + cls + '">' + inner + '</div>';
+        }
+      }
+      grid.innerHTML = html;
+    }
+
+    function renderRound() {
+      var lvl = r.lvl;
+      main.innerHTML =
+        '<div class="tsg-card tsg-round lv-' + r.level + '">' +
+        '<div class="tsg-meta"><span class="tsg-level">' + esc(lvl.label) + ' · ' + fmtCoef(lvl.coef) + '</span>' +
+        '<span class="tsg-mode">' + (lvl.display === 'visible' ? '👁' : '🙈') + ' ' + esc(lvl.hint || '') + '</span>' +
+        '<span class="tsg-day">' + dayLabel(ri) + ' · Manche ' + (ri + 1) + '/' + TOTAL + '</span></div>' +
+        '<div class="tsg-order">Tu dois imputer <b>' + fmtHuman(r.targetMin) + '</b><br>sur <span class="tsg-proj">« ' + esc(r.project.name) + ' »</span>' +
+        (r.project.code ? ' <code>' + esc(r.project.code) + '</code>' : '') + '</div>' +
+        '<div class="tsg-clockwrap"><div class="tsg-clock' + (lvl.display === 'hidden' ? ' masked' : '') + '">' + (lvl.display === 'hidden' ? '??:??' : '00:00') + '</div>' +
+        '<div class="tsg-target">Cible <b>' + fmtHM(r.targetMin) + '</b> = ' + String(Math.round(r.targetMs) / 1000).replace('.', ',') + ' s réelles</div>' +
+        '<div class="tsg-stamp"></div></div>' +
+        '<div class="tsg-result"></div>' +
+        '<button class="tsg-go" type="button">Start</button>' +
+        '<div class="tsg-tip">Clic, toucher ou barre d\'espace</div>' +
+        '</div>';
+      ui.card = main.querySelector('.tsg-round');
+      ui.clock = main.querySelector('.tsg-clock');
+      ui.btn = main.querySelector('.tsg-go');
+      ui.tip = main.querySelector('.tsg-tip');
+      ui.result = main.querySelector('.tsg-result');
+      ui.stamp = main.querySelector('.tsg-stamp');
+      ui.btn.addEventListener('pointerdown', onMainPointerDown);
+      ui.btn.addEventListener('contextmenu', function (e) { e.preventDefault(); });
+    }
+
+    function renderResult(d, elapsed) {
+      ui.card.classList.remove('running');
+      ui.card.classList.add('done', 'tone-' + d.tone);
+      ui.clock.classList.remove('masked');
+      ui.clock.textContent = d.timeout ? '--:--' : d.imputed;
+      ui.stamp.textContent = d.stamp;
+      ui.stamp.className = 'tsg-stamp show tone-' + d.tone;
+      ui.result.innerHTML =
+        '<div class="tsg-res-tier">' + esc(d.tier) + '</div>' +
+        '<div class="tsg-res-grid">' +
+        '<span>Temps imputé</span><b>' + (d.timeout ? '—' : d.imputed) + '</b>' +
+        '<span>Écart</span><b>' + esc(d.diffText) + (d.timeout ? '' : ' <small>(' + d.errorMs + ' ms réels)</small>') + '</b>' +
+        '<span>Points</span><b class="pts">+' + fmtPts(d.points) + (d.points && r.lvl.coef !== 1 ? ' <small>(' + fmtCoef(r.lvl.coef) + ')</small>' : '') + '</b>' +
+        '</div>';
+      ui.btn.textContent = ri + 1 >= TOTAL ? 'Voir ma feuille de temps' : 'Manche suivante →';
+      ui.btn.classList.remove('running');
+      ui.btn.classList.add('next', 'locked');
+      ui.tip.textContent = 'Clic, toucher ou barre d\'espace';
+      setTimeout(function () { if (ui.btn) ui.btn.classList.remove('locked'); }, cfg.inputLockMs);
+    }
+
+    function rank(s) {
+      if (s >= 14000) return 'Contrôleur·se de gestion émérite';
+      if (s >= 9000) return 'Imputation chirurgicale';
+      if (s >= 5000) return 'Feuille de temps acceptable';
+      if (s >= 2000) return 'Relances du PMO en approche';
+      return 'Inter-contrat prolongé';
+    }
+
+    function renderEnd() {
+      var rows = details.map(function (d) {
+        return '<tr class="tone-' + d.tone + '"><td>' + d.day + '</td><td class="proj">' + esc(d.project) + '</td><td>' + d.target + '</td><td>' + d.imputed + '</td>' +
+          '<td class="gap">' + esc(d.timeout ? 'Non soumise' : d.diffText) + (d.timeout ? '' : '<small>' + d.errorMs + ' ms</small>') + '</td>' +
+          '<td class="pts">' + fmtPts(d.points) + '</td><td><span class="tsg-mini-stamp tone-' + d.tone + '">' + esc(d.stamp) + '</span></td></tr>';
+      }).join('');
+      var extra = (opts.endActions || []).map(function (a, i) {
+        return '<button class="tsg-btn ' + (a.primary ? '' : 'ghost') + '" data-x="' + i + '">' + esc(a.label) + '</button>';
+      }).join('');
+      main.innerHTML =
+        '<div class="tsg-card tsg-end">' +
+        '<div class="tsg-end-head"><div><div class="tsg-kicker">Feuille de temps soumise</div>' +
+        '<div class="tsg-end-score">' + fmtPts(score) + ' <small>points</small></div>' +
+        '<div class="tsg-end-rank">' + rank(score) + '</div></div>' +
+        '<div class="tsg-end-stamp">SOUMIS</div></div>' +
+        '<div class="tsg-tablewrap"><table class="tsg-recap"><thead><tr><th>Jour</th><th>Projet</th><th>Demandé</th><th>Imputé</th><th>Écart</th><th>Points</th><th>Statut</th></tr></thead>' +
+        '<tbody>' + rows + '</tbody></table></div>' +
+        '<div class="tsg-row"><button class="tsg-btn" data-a="again">↻ Rejouer</button>' + extra + '</div>' +
+        '</div>';
+      bind('again', start);
+      main.querySelectorAll('[data-x]').forEach(function (b) {
+        b.addEventListener('click', function () {
+          var a = opts.endActions[+b.getAttribute('data-x')];
+          if (a && a.onClick) a.onClick({ score: score, details: details.slice() });
+        });
+      });
+    }
+
+    function destroy() {
+      destroyed = true;
+      stopLoop();
+      setKeys(false);
+      if (root.parentNode) root.parentNode.removeChild(root);
+    }
+
+    showHome();
+    return { start: start, destroy: destroy, showHome: showHome };
+  };
+})();
+
+</script>
+
+<!-- ===== DÉMARRAGE ===== -->
+<script>
+(function () {
+  TimesheetGame.createGame(document.getElementById('app'), {
+    onGameEnd: function (result) {
+      // Point d'intégration : { score, details: [...] }
+      if (window.console) console.log('[Feuille de temps Express] onGameEnd', result);
+    }
+  });
+})();
+</script>
+</body>
+</html>
